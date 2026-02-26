@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T. ก้าวหน้า - กิจกรรมสะสมแต้ม</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f8faff;
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        .nav-item.active {
+            color: #3b82f6;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 1rem;
+            font-weight: 500;
+            color: #94a3b8;
+        }
+        .tab-btn.active {
+            background: white;
+            color: #1e293b;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.02);
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col pb-24">
+    <div class="p-6 pt-12">
+        <h1 class="text-2xl font-bold">กิจกรรมสะสมแต้ม</h1>
+        <p class="text-gray-400 text-sm">ทำความดีและคัดแยกขยะเพื่อรับของรางวัล</p>
+    </div>
+
+    <div class="px-6">
+        <div class="bg-gray-100 p-1 rounded-2xl flex">
+            <button class="tab-btn active">ความดี</button>
+            <button class="tab-btn">ธนาคารขยะ</button>
+        </div>
+    </div>
+
+    <!-- Active Tab Content: Good Deeds -->
+    <div class="px-6 mt-8 space-y-6">
+        <div class="bg-orange-50 p-6 rounded-3xl border border-orange-100 relative overflow-hidden">
+            <div class="relative z-10">
+                <h3 class="font-bold text-orange-800 flex items-center gap-2">
+                    <i class="fas fa-sun text-yellow-500"></i>
+                    เช็คชื่อยามเช้า
+                </h3>
+                <p class="text-orange-700 text-xs mt-1">สแกนคิวอาร์โค้ดกิจกรรมหน้าเสาธงเพื่อรับแต้มความดี 1 แต้ม</p>
+                <button class="w-full bg-orange-500 text-white py-3 rounded-xl font-bold mt-4 flex items-center justify-center gap-2 shadow-lg shadow-orange-100">
+                    <i class="fas fa-qrcode"></i>
+                    สแกน QR เพื่อเช็คชื่อ
+                </button>
+            </div>
+            <i class="fas fa-sun absolute -right-4 -bottom-4 text-orange-100 text-8xl opacity-50"></i>
+        </div>
+
+        <div class="bg-white p-6 rounded-3xl shadow-sm space-y-4">
+            <h3 class="font-bold flex items-center gap-2">
+                <i class="fas fa-cloud-upload-alt text-blue-500"></i>
+                บันทึกกิจกรรมความดีอื่นๆ
+            </h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="text-xs text-gray-400 ml-1">รายละเอียดความดีที่ทำ</label>
+                    <textarea class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 text-sm min-h-[100px]" placeholder="เช่น ช่วยครูยกของ, ทำความสะอาดห้องเรียน..."></textarea>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400 ml-1">อัปโหลดรูปภาพ (ImgBB)</label>
+                    <div class="w-full bg-gray-50 border border-gray-100 rounded-2xl p-4 flex items-center justify-between">
+                        <span class="text-gray-400 text-sm">เลือกไฟล์ ไม่ได้เลือกไฟล์ใด</span>
+                        <i class="fas fa-image text-gray-300"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>หน้าหลัก</span>
+        </a>
+        <a href="points.html" class="nav-item active">
+            <div class="bg-blue-50 p-2 rounded-xl mb-1">
+                <i class="fas fa-tasks"></i>
+            </div>
+            <span>กิจกรรม</span>
+        </a>
+        <a href="announcements.html" class="nav-item">
+            <i class="fas fa-bullhorn"></i>
+            <span>ประกาศ</span>
+        </a>
+        <a href="report.html" class="nav-item">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>แจ้งปัญหา</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user-circle"></i>
+            <span>โปรไฟล์</span>
+        </a>
+    </nav>
+</body>
+</html>

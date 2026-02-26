@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>S.T. ก้าวหน้า - ระบบดิจิทัล สภานักเรียน</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Kanit', sans-serif;
+            background-color: #f8faff;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+        }
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #94a3b8;
+            font-size: 0.75rem;
+        }
+        .nav-item.active {
+            color: #3b82f6;
+        }
+        .nav-item i {
+            font-size: 1.5rem;
+            margin-bottom: 0.25rem;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col">
+    <!-- Main Content -->
+    <main class="flex-grow pb-24">
+        <!-- Header Section -->
+        <div class="bg-blue-600 text-white pt-12 pb-20 px-6 rounded-b-[3rem] relative">
+            <div class="flex justify-between items-start">
+                <div>
+                    <p class="text-blue-100 text-sm">ยินดีต้อนรับกลับมา</p>
+                    <h1 class="text-2xl font-bold mt-1" id="userName">Kittipot Ice</h1>
+                    <p class="text-blue-200 text-xs mt-1">รหัสนักเรียน: 19823</p>
+                </div>
+                <div class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center text-xl font-bold border-2 border-blue-300">
+                    K
+                </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="px-6 -mt-10 grid grid-cols-2 gap-4">
+            <div class="bg-white p-6 rounded-3xl shadow-sm text-center">
+                <div class="w-10 h-10 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-award text-yellow-500 text-xl"></i>
+                </div>
+                <div class="text-2xl font-bold">0</div>
+                <div class="text-gray-400 text-xs mt-1">แต้มความดี</div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl shadow-sm text-center">
+                <div class="w-10 h-10 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-recycle text-green-500 text-xl"></i>
+                </div>
+                <div class="text-2xl font-bold">0</div>
+                <div class="text-gray-400 text-xs mt-1">แสตมป์ขยะ</div>
+            </div>
+        </div>
+
+        <!-- Announcements Section -->
+        <div class="px-6 mt-8">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="font-bold flex items-center gap-2">
+                    <i class="far fa-bell text-blue-500"></i>
+                    ประกาศจากสภานักเรียน
+                </h2>
+                <a href="announcements.html" class="text-blue-500 text-sm">ดูทั้งหมด</a>
+            </div>
+            <div class="bg-white p-8 rounded-3xl text-center border border-dashed border-gray-200">
+                <p class="text-gray-400">ยังไม่มีประกาศใหม่</p>
+            </div>
+        </div>
+
+        <!-- Menu Grid -->
+        <div class="px-6 mt-8 grid grid-cols-2 gap-4">
+            <a href="points.html" class="bg-blue-50 p-6 rounded-3xl flex flex-col items-start gap-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <i class="fas fa-clipboard-list text-blue-600"></i>
+                </div>
+                <span class="font-medium text-blue-900">บันทึกกิจกรรม</span>
+            </a>
+            <a href="report.html" class="bg-orange-50 p-6 rounded-3xl flex flex-col items-start gap-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <i class="fas fa-exclamation-triangle text-orange-500"></i>
+                </div>
+                <span class="font-medium text-orange-900">แจ้งเรื่องร้องเรียน</span>
+            </a>
+            <div class="bg-gray-50 p-6 rounded-3xl flex flex-col items-start gap-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <i class="fas fa-book-open text-gray-600"></i>
+                </div>
+                <span class="font-medium text-gray-900">คู่มือการใช้งาน</span>
+            </div>
+            <div class="bg-green-50 p-6 rounded-3xl flex flex-col items-start gap-3">
+                <div class="bg-white p-2 rounded-lg shadow-sm">
+                    <i class="fas fa-qrcode text-green-600"></i>
+                </div>
+                <span class="font-medium text-green-900">สแกนเช็คชื่อ</span>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-4 flex justify-between items-center z-50">
+        <a href="index.html" class="nav-item active">
+            <div class="bg-blue-50 p-2 rounded-xl mb-1">
+                <i class="fas fa-home"></i>
+            </div>
+            <span>หน้าหลัก</span>
+        </a>
+        <a href="points.html" class="nav-item">
+            <i class="fas fa-tasks"></i>
+            <span>กิจกรรม</span>
+        </a>
+        <a href="announcements.html" class="nav-item">
+            <i class="fas fa-bullhorn"></i>
+            <span>ประกาศ</span>
+        </a>
+        <a href="report.html" class="nav-item">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>แจ้งปัญหา</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user-circle"></i>
+            <span>โปรไฟล์</span>
+        </a>
+    </nav>
+
+    <!-- Scripts -->
+    <script type="module" src="js/firebase-config.js"></script>
+    <script type="module" src="js/auth.js"></script>
+    <script type="module" src="js/data.js"></script>
+</body>
+</html>
