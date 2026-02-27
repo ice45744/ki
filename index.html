@@ -7,31 +7,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
     <style>
-        body {
-            font-family: 'Kanit', sans-serif;
-            background-color: #f8faff;
-        }
-        .glass-card {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-radius: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        }
-        .nav-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            color: #94a3b8;
-            font-size: 0.75rem;
-        }
-        .nav-item.active {
-            color: #3b82f6;
-        }
-        .nav-item i {
-            font-size: 1.5rem;
-            margin-bottom: 0.1rem;
-        }
+        /* Keep only page-specific overrides if any, but most moved to style.css */
     </style>
     <link rel="prefetch" href="login.html">
     <link rel="prefetch" href="register.html">
@@ -51,9 +29,44 @@
                     <h1 class="text-xl font-bold mt-1" id="userName">Kittipot Ice</h1>
                     <p class="text-blue-200 text-[10px] mt-1">รหัสนักเรียน: 19823</p>
                 </div>
-                <a href="profile.html" class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-blue-300">
-                    K
-                </a>
+                <div class="relative">
+                    <button id="profileBtn" class="w-10 h-10 bg-blue-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-blue-300 overflow-hidden focus:outline-none">
+                        K
+                    </button>
+                    <!-- Profile Dropdown -->
+                    <div id="profileDropdown" class="profile-dropdown p-4 border border-gray-100 dark:border-slate-700">
+                        <div class="space-y-3">
+                            <a href="profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors">
+                                <i class="fas fa-user-circle text-blue-500"></i>
+                                โปรไฟล์
+                            </a>
+                            <a href="edit-profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors">
+                                <i class="fas fa-user-edit text-blue-500"></i>
+                                แก้ไขข้อมูล
+                            </a>
+                            <hr class="border-gray-100 dark:border-slate-700">
+                            <p class="text-[10px] text-gray-400 uppercase font-bold px-1">ทางลัดด่วน</p>
+                            <div id="quickShortcuts" class="grid grid-cols-1 gap-2">
+                                <a href="points.html" class="flex items-center gap-3 text-xs hover:text-blue-500">
+                                    <i class="fas fa-star text-yellow-500 w-4"></i>
+                                    สะสมแต้มความดี
+                                </a>
+                                <a href="report.html" class="flex items-center gap-3 text-xs hover:text-blue-500">
+                                    <i class="fas fa-bullhorn text-orange-500 w-4"></i>
+                                    แจ้งเรื่องร้องเรียน
+                                </a>
+                            </div>
+                            <hr class="border-gray-100 dark:border-slate-700">
+                            <button id="darkModeToggle" class="w-full flex items-center justify-between text-xs font-medium py-1">
+                                <span>โหมดมืด (Dark Mode)</span>
+                                <i class="fas fa-moon text-blue-500"></i>
+                            </button>
+                            <button class="w-full text-left text-xs font-medium text-red-500 mt-2 py-1" onclick="window.location.href='login.html'">
+                                <i class="fas fa-sign-out-alt mr-2"></i>ออกจากระบบ
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -119,7 +132,7 @@
     </main>
 
     <!-- Bottom Navigation -->
-    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-2 flex justify-between items-center z-50">
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50 h-20">
         <a href="index.html" class="nav-item active">
             <i class="fas fa-home"></i>
             <span>หน้าหลัก</span>
@@ -146,5 +159,38 @@
     <script type="module" src="js/firebase-config.js"></script>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/data.js"></script>
+    <script>
+        // Profile Dropdown Toggle
+        const profileBtn = document.getElementById('profileBtn');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        profileBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+
+        document.addEventListener('click', () => {
+            profileDropdown.classList.remove('show');
+        });
+
+        // Dark Mode Toggle
+        const darkModeToggle = document.getElementById('darkModeToggle');
+        const body = document.body;
+
+        // Check for saved preference
+        if (localStorage.getItem('dark-mode') === 'enabled') {
+            body.classList.add('dark-mode');
+        }
+
+        darkModeToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            body.classList.toggle('dark-mode');
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('dark-mode', 'enabled');
+            } else {
+                localStorage.setItem('dark-mode', 'disabled');
+            }
+        });
+    </script>
 </body>
 </html>

@@ -1,0 +1,90 @@
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f8faff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+body.dark-mode {
+    background-color: #0f172a;
+    color: #f1f5f9;
+}
+
+.dark-mode .bg-white {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+}
+
+.dark-mode .text-gray-800, 
+.dark-mode .text-gray-900,
+.dark-mode .text-blue-900,
+.dark-mode .text-orange-900,
+.dark-mode .text-green-900 {
+    color: #f1f5f9 !important;
+}
+
+.dark-mode .text-gray-400,
+.dark-mode .text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+.dark-mode .bg-gray-50,
+.dark-mode .bg-blue-50,
+.dark-mode .bg-orange-50,
+.dark-mode .bg-green-50,
+.dark-mode .bg-gray-100 {
+    background-color: #334155 !important;
+}
+
+.dark-mode nav {
+    background-color: #1e293b !important;
+    border-top-color: #334155 !important;
+}
+
+.dark-mode .glass-card {
+    background: rgba(30, 41, 59, 0.8) !important;
+}
+
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    padding: 0.5rem 0;
+    transition: all 0.2s;
+}
+
+.nav-item.active {
+    color: #3b82f6;
+}
+
+.nav-item i {
+    font-size: 1.4rem;
+    margin-bottom: 0.2rem;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 200px;
+    background: white;
+    border-radius: 1.5rem;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s ease;
+    z-index: 100;
+}
+
+.profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(10px);
+}
+
+.dark-mode .profile-dropdown {
+    background: #1e293b;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
