@@ -44,26 +44,26 @@
 </head>
 <body class="min-h-screen flex flex-col pb-24">
     <div class="p-6 pt-12">
-        <h1 class="text-2xl font-bold flex items-center gap-3">
-            <span class="w-10 h-10 bg-orange-50 rounded-xl flex items-center justify-center">
-                <i class="fas fa-exclamation-triangle text-orange-500"></i>
+        <h1 class="text-xl font-bold flex items-center gap-3">
+            <span class="w-8 h-8 bg-orange-50 rounded-xl flex items-center justify-center">
+                <i class="fas fa-exclamation-triangle text-orange-500 text-sm"></i>
             </span>
             แจ้งปัญหา
         </h1>
-        <p class="text-gray-500 text-sm mt-1">พบปัญหาหรือมีข้อเสนอแนะ แจ้งสภานักเรียนได้ที่นี่</p>
+        <p class="text-gray-500 text-xs mt-1">พบปัญหาหรือมีข้อเสนอแนะ แจ้งสภานักเรียนได้ที่นี่</p>
 
         <div class="mt-6 bg-orange-50 p-4 rounded-2xl border border-orange-100 flex gap-3">
-            <i class="fas fa-info-circle text-orange-500 mt-1"></i>
-            <p class="text-orange-800 text-xs leading-relaxed">ข้อมูลของคุณจะถูกเก็บเป็นความลับ สภานักเรียนจะตรวจสอบและดำเนินการแก้ไขปัญหาอย่างเร็วที่สุด</p>
+            <i class="fas fa-info-circle text-orange-500 mt-1 text-xs"></i>
+            <p class="text-orange-800 text-[10px] leading-relaxed">ข้อมูลของคุณจะถูกเก็บเป็นความลับ สภานักเรียนจะตรวจสอบและดำเนินการแก้ไขปัญหาอย่างเร็วที่สุด</p>
         </div>
 
-        <form class="mt-8 space-y-6">
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
+        <form class="mt-8 space-y-5">
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
                     <i class="fas fa-map-marker-alt text-gray-400"></i>
                     ประเภทของปัญหา
                 </label>
-                <select class="input-field appearance-none">
+                <select class="input-field appearance-none text-xs p-3">
                     <option>เลือกหมวดหมู่...</option>
                     <option>อาคารสถานที่</option>
                     <option>ความสะอาด</option>
@@ -72,23 +72,23 @@
                 </select>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
                     <i class="fas fa-align-left text-gray-400"></i>
                     รายละเอียด
                 </label>
-                <textarea class="input-field min-h-[150px]" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
+                <textarea class="input-field min-h-[120px] text-xs p-3" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
             </div>
 
-            <div class="space-y-2">
-                <label class="text-sm font-medium text-gray-700 flex items-center gap-2">
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
                     <i class="fas fa-camera text-gray-400"></i>
                     อัปโหลดรูปภาพประกอบ (ImgBB)
                 </label>
-                <input type="file" class="input-field">
+                <input type="file" class="input-field text-xs p-3">
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100">ส่งข้อมูล</button>
+            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100">ส่งข้อมูล</button>
         </form>
     </div>
 
