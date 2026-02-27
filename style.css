@@ -75,7 +75,7 @@ body.dark-mode {
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    z-index: 100;
+    z-index: 9999;
 }
 
 .profile-dropdown.show {
@@ -85,6 +85,19 @@ body.dark-mode {
 }
 
 .dark-mode .profile-dropdown {
-    background: #1e293b;
+    background: #1e293b !important;
     box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    border-color: #334155;
+}
+
+.dark-mode .profile-dropdown * {
+    color: #f1f5f9 !important;
+}
+
+.dark-mode .profile-dropdown hr {
+    border-color: #334155 !important;
+}
+
+.dark-mode .profile-dropdown .text-red-500 {
+    color: #ef4444 !important;
 }
