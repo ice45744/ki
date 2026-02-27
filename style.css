@@ -70,12 +70,12 @@ body.dark-mode {
     width: 200px;
     background: white;
     border-radius: 1.5rem;
-    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-10px);
     transition: all 0.3s ease;
-    z-index: 100;
+    z-index: 9999;
 }
 
 .profile-dropdown.show {
