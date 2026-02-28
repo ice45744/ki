@@ -24,19 +24,27 @@
             <p class="text-orange-800 text-[10px] leading-relaxed">ข้อมูลของคุณจะถูกเก็บเป็นความลับ สภานักเรียนจะตรวจสอบและดำเนินการแก้ไขปัญหาอย่างเร็วที่สุด</p>
         </div>
 
-        <form class="mt-8 space-y-5">
+        <form id="reportForm" class="mt-8 space-y-5">
             <div class="space-y-1">
                 <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
                     <i class="fas fa-map-marker-alt text-gray-400"></i>
                     ประเภทของปัญหา
                 </label>
-                <select class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
-                    <option>เลือกหมวดหมู่...</option>
-                    <option>อาคารสถานที่</option>
-                    <option>ความสะอาด</option>
-                    <option>ความประพฤติ</option>
-                    <option>อื่นๆ</option>
+                <select id="issueCategory" required class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
+                    <option value="">เลือกหมวดหมู่...</option>
+                    <option value="อาคารสถานที่">อาคารสถานที่</option>
+                    <option value="ความสะอาด">ความสะอาด</option>
+                    <option value="ความประพฤติ">ความประพฤติ</option>
+                    <option value="อื่นๆ">อื่นๆ</option>
                 </select>
+            </div>
+
+            <div class="space-y-1">
+                <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
+                    <i class="fas fa-align-left text-gray-400"></i>
+                    หัวข้อปัญหา
+                </label>
+                <input type="text" id="issueTitle" required class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs" placeholder="สรุปปัญหาในประโยคเดียว...">
             </div>
 
             <div class="space-y-1">
@@ -44,18 +52,18 @@
                     <i class="fas fa-align-left text-gray-400"></i>
                     รายละเอียด
                 </label>
-                <textarea class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs min-h-[120px]" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
+                <textarea id="issueDescription" required class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs min-h-[120px]" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
             </div>
 
             <div class="space-y-1">
                 <label class="text-xs font-medium text-gray-700 flex items-center gap-2">
                     <i class="fas fa-camera text-gray-400"></i>
-                    อัปโหลดรูปภาพประกอบ (ImgBB)
+                    อัปโหลดรูปภาพประกอบ
                 </label>
-                <input type="file" class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
+                <input type="file" id="issueImage" accept="image/*" class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
             </div>
 
-            <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100">ส่งข้อมูล</button>
+            <button type="submit" id="submitBtn" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100">ส่งข้อมูล</button>
         </form>
     </div>
 
@@ -83,5 +91,36 @@
         </a>
     </nav>
     <script src="js/theme.js"></script>
+    <script type="module">
+        import { reportIssue } from './js/data.js';
+
+        const form = document.getElementById('reportForm');
+        const submitBtn = document.getElementById('submitBtn');
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังส่งข้อมูล...';
+
+            const issueData = {
+                category: document.getElementById('issueCategory').value,
+                title: document.getElementById('issueTitle').value,
+                description: document.getElementById('issueDescription').value
+            };
+            const imageFile = document.getElementById('issueImage').files[0];
+
+            const result = await reportIssue(issueData, imageFile);
+            
+            if (result.success) {
+                alert('ส่งข้อมูลเรียบร้อยแล้ว สภานักเรียนจะรีบดำเนินการตรวจสอบครับ');
+                form.reset();
+            } else {
+                alert('เกิดข้อผิดพลาด กรุณาลองใหม่อีกครั้ง');
+            }
+
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'ส่งข้อมูล';
+        };
+    </script>
 </body>
 </html>

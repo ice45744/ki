@@ -1,3 +1,5 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
 // Firebase configuration
 // Replace these with your actual Firebase project settings
 const firebaseConfig = {
@@ -9,4 +11,5 @@ const firebaseConfig = {
     appId: "YOUR_APP_ID"
 };
 
+export const app = initializeApp(firebaseConfig);
 export default firebaseConfig;
