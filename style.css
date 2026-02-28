@@ -65,6 +65,19 @@ body.dark-mode {
     border-color: #334155 !important;
 }
 
+/* Modal animation */
+#settingsModal.hidden {
+    display: none;
+}
+
+#settingsModal > div:last-child {
+    transition: transform 0.3s ease-out;
+}
+
+#settingsModal.hidden > div:last-child {
+    transform: translateY(100%);
+}
+
 /* UI Improvements */
 .nav-item {
     display: flex;
