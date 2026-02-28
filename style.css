@@ -22,6 +22,10 @@ body.dark-mode {
     border-color: #334155 !important;
 }
 
+.dark-mode .bg-blue-600 {
+    background-color: #1e3a8a !important;
+}
+
 .dark-mode .text-gray-800, 
 .dark-mode .text-gray-900,
 .dark-mode .text-blue-900,
