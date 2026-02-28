@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการแจ้งปัญหา - S.T. ก้าวหน้า</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex">
+        <main class="flex-1 p-4 md:p-8">
+            <header class="mb-8 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">จัดการแจ้งปัญหา</h1>
+                    <p class="text-sm text-gray-500">ติดตามและอัปเดตสถานะการแก้ไขปัญหา</p>
+                </div>
+                <a href="admin-dashboard.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                    <i class="fas fa-arrow-left mr-1"></i> กลับแผงควบคุม
+                </a>
+            </header>
+
+            <div class="grid grid-cols-1 gap-6" id="reportsList">
+                <!-- Mock Data -->
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6">
+                    <div class="w-full md:w-48 h-48 bg-gray-100 rounded-2xl overflow-hidden flex-shrink-0">
+                        <img src="https://images.unsplash.com/photo-1584622650111-993a426fbf0a?w=400" class="w-full h-full object-cover" alt="Issue">
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="px-3 py-1 bg-orange-100 text-orange-600 rounded-full text-[10px] font-bold uppercase">อาคารสถานที่</span>
+                            <span class="text-xs text-gray-400">28 ก.พ. 2026</span>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-800 mb-2">ก๊อกน้ำอ่างล้างหน้าชำรุด</h3>
+                        <p class="text-sm text-gray-600 mb-4 leading-relaxed">ก๊อกน้ำที่อ่างล้างหน้าชาย ชั้น 2 อาคาร 3 ปิดไม่สนิท ทำให้น้ำไหลทิ้งตลอดเวลาครับ</p>
+                        
+                        <div class="flex items-center justify-between pt-4 border-t border-gray-50">
+                            <div class="flex items-center gap-2">
+                                <span class="w-2 h-2 rounded-full bg-yellow-500"></span>
+                                <span class="text-xs font-medium text-gray-500" id="status-1">รอดำเนินการ</span>
+                            </div>
+                            <button onclick="updateStatus(1)" class="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-colors">
+                                ทำเครื่องหมายว่าแก้ไขแล้ว
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        function updateStatus(id) {
+            const statusText = document.getElementById(`status-${id}`);
+            statusText.textContent = 'แก้ไขแล้ว';
+            statusText.parentElement.querySelector('span:first-child').className = 'w-2 h-2 rounded-full bg-green-500';
+            alert('อัปเดตสถานะเรียบร้อยแล้ว');
+        }
+    </script>
+</body>
+</html>

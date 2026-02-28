@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>จัดการคลังของขวัญ - S.T. ก้าวหน้า</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="flex">
+        <main class="flex-1 p-4 md:p-8">
+            <header class="mb-8 flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-bold text-gray-800">จัดการคลังของขวัญ</h1>
+                    <p class="text-sm text-gray-500">จัดการไอเทมสำหรับแลกแต้มธนาคารขยะ</p>
+                </div>
+                <div class="flex gap-3">
+                    <button onclick="openAddModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg shadow-blue-100 flex items-center gap-2">
+                        <i class="fas fa-plus"></i> เพิ่มของรางวัล
+                    </button>
+                    <a href="admin-dashboard.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center">
+                        <i class="fas fa-arrow-left mr-1"></i> กลับแผงควบคุม
+                    </a>
+                </div>
+            </header>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="inventoryGrid">
+                <!-- Mock Data -->
+                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
+                    <div class="aspect-square bg-gray-50 rounded-2xl mb-4 overflow-hidden">
+                        <img src="https://cdn-icons-png.flaticon.com/512/2405/2405479.png" class="w-full h-full object-contain p-6" alt="Drink">
+                    </div>
+                    <h3 class="font-bold text-gray-800 mb-1">น้ำดื่ม 1 ขวด</h3>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-xs text-blue-600 font-bold">ใช้ 10 แสตมป์</span>
+                        <span class="text-xs text-gray-400">คงเหลือ: 50</span>
+                    </div>
+                    <div class="flex gap-2">
+                        <button class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200">แก้ไข</button>
+                        <button class="py-2 px-3 bg-red-50 text-red-500 rounded-xl text-xs hover:bg-red-100"><i class="fas fa-trash"></i></button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Simple Add Modal Placeholder -->
+    <div id="addModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white w-full max-w-md rounded-3xl p-8">
+            <h2 class="text-xl font-bold mb-6">เพิ่มของรางวัลใหม่</h2>
+            <div class="space-y-4">
+                <input type="text" placeholder="ชื่อของรางวัล" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
+                <input type="number" placeholder="แต้มที่ต้องใช้" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
+                <input type="number" placeholder="จำนวนสต็อก" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
+                <input type="file" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none">
+            </div>
+            <div class="mt-8 flex gap-3">
+                <button onclick="closeModal()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl font-bold">ยกเลิก</button>
+                <button onclick="closeModal()" class="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-100">บันทึก</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); }
+        function closeModal() { document.getElementById('addModal').classList.add('hidden'); }
+    </script>
+</body>
+</html>
