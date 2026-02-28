@@ -8,22 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        .input-field {
-            width: 100%;
-            padding: 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 1rem;
-            outline: none;
-            background: white;
-        }
-    </style>
-    <link rel="prefetch" href="index.html">
-    <link rel="prefetch" href="login.html">
-    <link rel="prefetch" href="register.html">
-    <link rel="prefetch" href="profile.html">
-    <link rel="prefetch" href="points.html">
-    <link rel="prefetch" href="announcements.html">
 </head>
 <body class="min-h-screen flex flex-col pb-24">
     <div class="p-6 pt-12">
@@ -46,7 +30,7 @@
                     <i class="fas fa-map-marker-alt text-gray-400"></i>
                     ประเภทของปัญหา
                 </label>
-                <select class="input-field appearance-none text-xs p-3">
+                <select class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
                     <option>เลือกหมวดหมู่...</option>
                     <option>อาคารสถานที่</option>
                     <option>ความสะอาด</option>
@@ -60,7 +44,7 @@
                     <i class="fas fa-align-left text-gray-400"></i>
                     รายละเอียด
                 </label>
-                <textarea class="input-field min-h-[120px] text-xs p-3" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
+                <textarea class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs min-h-[120px]" placeholder="อธิบายสถานที่และปัญหาที่พบอย่างละเอียด..."></textarea>
             </div>
 
             <div class="space-y-1">
@@ -68,14 +52,14 @@
                     <i class="fas fa-camera text-gray-400"></i>
                     อัปโหลดรูปภาพประกอบ (ImgBB)
                 </label>
-                <input type="file" class="input-field text-xs p-3">
+                <input type="file" class="w-full p-4 border border-gray-100 rounded-2xl outline-none bg-white text-xs">
             </div>
 
             <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-2xl font-bold text-sm shadow-lg shadow-blue-100">ส่งข้อมูล</button>
         </form>
     </div>
 
-    <!-- Bottom Navigation (Same as index) -->
+    <!-- Bottom Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50 h-20">
         <a href="index.html" class="nav-item">
             <i class="fas fa-home"></i>
@@ -98,10 +82,6 @@
             <span>โปรไฟล์</span>
         </a>
     </nav>
-    <script>
-        if (localStorage.getItem('dark-mode') === 'enabled') {
-            document.body.classList.add('dark-mode');
-        }
-    </script>
+    <script src="js/theme.js"></script>
 </body>
 </html>
