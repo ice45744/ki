@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Announcements - Admin Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen pb-12">
+    <div class="max-w-4xl mx-auto p-4 md:p-8">
+        <header class="mb-8 flex justify-between items-center">
+            <div>
+                <h1 class="text-2xl font-bold text-gray-800">จัดการข่าวสาร & ประกาศ</h1>
+                <p class="text-sm text-gray-500">สร้างประกาศใหม่และจัดการ Pop-up หน้าแรก</p>
+            </div>
+            <a href="admin-dashboard.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
+                <i class="fas fa-arrow-left mr-1"></i> กลับแดชบอร์ด
+            </a>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Create Form -->
+            <div class="md:col-span-2 space-y-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <h2 class="font-bold text-lg mb-6 flex items-center gap-2">
+                        <i class="fas fa-plus-circle text-blue-500"></i>
+                        สร้างประกาศใหม่
+                    </h2>
+                    
+                    <form id="announcementForm" class="space-y-4">
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">หัวข้อประกาศ</label>
+                            <input type="text" id="newsTitle" required placeholder="เช่น แจ้งกำหนดการสอบไล่..." 
+                                   class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">เนื้อหาประกาศ</label>
+                            <textarea id="newsContent" rows="4" required placeholder="รายละเอียดประกาศของคุณ..." 
+                                      class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"></textarea>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-gray-400 uppercase mb-2">อัปโหลดรูปภาพ (URL)</label>
+                            <div class="flex gap-2">
+                                <input type="text" id="newsImage" placeholder="วางลิงก์รูปภาพที่นี่..." 
+                                       class="flex-1 px-4 py-3 bg-gray-50 border border-gray-200 rounded-2xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
+                                <button type="button" class="px-4 bg-gray-100 rounded-2xl text-gray-500 hover:bg-gray-200 transition-colors">
+                                    <i class="fas fa-image"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between p-4 bg-blue-50 rounded-2xl">
+                            <div class="flex items-center gap-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center text-blue-600">
+                                    <i class="fas fa-comment-alt"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-blue-900">เปิดใช้งาน Pop-up</p>
+                                    <p class="text-[10px] text-blue-600">แสดงประกาศนี้ทันทีที่นักเรียนเข้าสู่ระบบ</p>
+                                </div>
+                            </div>
+                            <label class="relative inline-flex items-center cursor-pointer">
+                                <input type="checkbox" id="newsPopup" class="sr-only peer">
+                                <div class="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
+                            </label>
+                        </div>
+
+                        <button type="submit" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all transform active:scale-[0.98]">
+                            <i class="fas fa-paper-plane mr-2"></i> โพสต์ประกาศ
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- List / Preview -->
+            <div class="space-y-6">
+                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
+                    <h2 class="font-bold text-lg mb-4 flex items-center gap-2">
+                        <i class="fas fa-history text-gray-400"></i>
+                        ประกาศล่าสุด
+                    </h2>
+                    <div id="announcementList" class="space-y-4">
+                        <!-- Items populated by JS -->
+                        <div class="text-center py-8">
+                            <i class="fas fa-inbox text-gray-200 text-4xl mb-2"></i>
+                            <p class="text-xs text-gray-400">ยังไม่มีประกาศ</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        const form = document.getElementById('announcementForm');
+        const list = document.getElementById('announcementList');
+
+        // Load existing
+        let announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+
+        function renderList() {
+            if (announcements.length === 0) {
+                list.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs">ยังไม่มีประกาศ</div>`;
+                return;
+            }
+
+            list.innerHTML = announcements.map((a, i) => `
+                <div class="p-4 rounded-2xl border border-gray-50 hover:border-blue-100 transition-all group relative">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${a.title}</h4>
+                        <button onclick="deleteNews(${i})" class="text-gray-300 hover:text-red-500 transition-colors">
+                            <i class="fas fa-trash-alt text-xs"></i>
+                        </button>
+                    </div>
+                    <p class="text-[10px] text-gray-500 line-clamp-2 mb-2">${a.content}</p>
+                    <div class="flex items-center justify-between">
+                        <span class="text-[9px] text-gray-400">${a.date}</span>
+                        ${a.isPopup ? '<span class="px-2 py-0.5 bg-green-100 text-green-600 rounded-full text-[8px] font-bold">Pop-up ON</span>' : ''}
+                    </div>
+                </div>
+            `).reverse().join('');
+        }
+
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const newAnn = {
+                title: document.getElementById('newsTitle').value,
+                content: document.getElementById('newsContent').value,
+                image: document.getElementById('newsImage').value || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80',
+                isPopup: document.getElementById('newsPopup').checked,
+                date: new Date().toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' }),
+                timestamp: Date.now()
+            };
+
+            // If this is a popup, disable other popups (only one at a time for simplicity)
+            if (newAnn.isPopup) {
+                announcements = announcements.map(a => ({...a, isPopup: false}));
+            }
+
+            announcements.push(newAnn);
+            localStorage.setItem('announcements', JSON.stringify(announcements));
+            
+            form.reset();
+            renderList();
+            alert('บันทึกประกาศเรียบร้อยแล้ว!');
+        });
+
+        window.deleteNews = (index) => {
+            if(confirm('ยืนยันการลบประกาศนี้?')) {
+                announcements.splice(index, 1);
+                localStorage.setItem('announcements', JSON.stringify(announcements));
+                renderList();
+            }
+        };
+
+        renderList();
+    </script>
+</body>
+</html>

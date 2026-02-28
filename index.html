@@ -141,10 +141,73 @@
         </a>
     </nav>
 
+    <!-- Pop-up Overlay -->
+    <div id="popupOverlay" class="fixed inset-0 bg-black/60 z-[9999] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+        <div class="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl transform scale-90 transition-transform duration-300" id="popupContent">
+            <div class="relative h-48 bg-gray-200">
+                <img id="popupImg" src="" alt="News" class="w-full h-full object-cover">
+                <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="p-8">
+                <div class="flex items-center gap-2 mb-3">
+                    <span class="px-2 py-0.5 bg-blue-100 text-blue-600 rounded-md text-[10px] font-bold uppercase tracking-wider">ประกาศสำคัญ</span>
+                    <span id="popupDate" class="text-[10px] text-gray-400 font-medium"></span>
+                </div>
+                <h3 id="popupTitle" class="text-xl font-bold text-gray-800 mb-3 leading-tight"></h3>
+                <p id="popupText" class="text-sm text-gray-500 leading-relaxed mb-8 line-clamp-4"></p>
+                <button onclick="closePopup()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+                    รับทราบ
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script type="module" src="js/firebase-config.js"></script>
     <script type="module" src="js/auth.js"></script>
     <script type="module" src="js/data.js"></script>
     <script src="js/theme.js"></script>
+    <script>
+        // Popup Logic
+        window.addEventListener('load', () => {
+            const announcements = JSON.parse(localStorage.getItem('announcements') || '[]');
+            const activePopup = announcements.find(a => a.isPopup);
+            
+            if (activePopup) {
+                // Check if already shown in this session
+                const lastShown = sessionStorage.getItem('popupShown');
+                if (lastShown !== activePopup.timestamp.toString()) {
+                    showPopup(activePopup);
+                }
+            }
+        });
+
+        function showPopup(news) {
+            document.getElementById('popupTitle').textContent = news.title;
+            document.getElementById('popupText').textContent = news.content;
+            document.getElementById('popupImg').src = news.image;
+            document.getElementById('popupDate').textContent = news.date;
+            
+            const overlay = document.getElementById('popupOverlay');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('popupContent').classList.remove('scale-90');
+                document.getElementById('popupContent').classList.add('scale-100');
+            }, 10);
+            
+            sessionStorage.setItem('popupShown', news.timestamp);
+        }
+
+        window.closePopup = () => {
+            const content = document.getElementById('popupContent');
+            content.classList.remove('scale-100');
+            content.classList.add('scale-90');
+            setTimeout(() => {
+                document.getElementById('popupOverlay').classList.add('hidden');
+            }, 200);
+        };
+    </script>
 </body>
 </html>
