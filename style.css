@@ -98,8 +98,8 @@ body.dark-mode {
 .profile-dropdown {
     position: absolute;
     top: calc(100% + 10px);
-    right: -15px; /* ขยับมาทางขวามากขึ้นเพื่อให้พ้นขอบจอ */
-    width: 230px; /* เพิ่มความกว้างเล็กน้อยเพื่อให้ดูไม่อึดอัด */
+    left: -10px; /* เปลี่ยนจาก right: -15px เป็น left เพื่อให้เมนูแสดงจากซ้ายไปขวา */
+    width: 230px;
     background: white;
     border-radius: 1.25rem;
     box-shadow: 0 10px 30px rgba(0,0,0,0.15);
