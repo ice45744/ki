@@ -159,16 +159,17 @@
     </div>
 
     <script type="module">
-        import { auth, db, logout, getAnnouncements } from "./js/data.js";
+        import { auth, db, logout, getAnnouncements, getUserData } from "./js/data.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { doc, getDoc, query, collection, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { query, collection, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Auth Protection
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const userDoc = await getDoc(doc(db, "users", user.uid));
-                if (userDoc.exists()) {
-                    const userData = userDoc.data();
+                // Fetch user data with cache preference
+                const userResult = await getUserData(user.uid);
+                if (userResult.success) {
+                    const userData = userResult.data;
                     document.getElementById('userName').textContent = userData.displayName || 'นักเรียน';
                     document.getElementById('dropdownUserName').textContent = userData.displayName || 'นักเรียน';
                     document.getElementById('studentId').textContent = `รหัสนักเรียน: ${userData.studentId || '-'}`;
@@ -178,8 +179,19 @@
                         document.getElementById('adminSection')?.classList.add('flex');
                     }
                 }
+                
                 renderAnnouncements();
                 checkPopup();
+                
+                // Background sync for freshest data
+                getUserData(user.uid, false).then(res => {
+                    if (res.success) {
+                        const d = res.data;
+                        document.getElementById('userName').textContent = d.displayName || 'นักเรียน';
+                        document.getElementById('dropdownUserName').textContent = d.displayName || 'นักเรียน';
+                        document.getElementById('studentId').textContent = `รหัสนักเรียน: ${d.studentId || '-'}`;
+                    }
+                });
             } else {
                 window.location.href = 'login.html';
             }
@@ -191,23 +203,34 @@
         // Announcements
         async function renderAnnouncements() {
             const container = document.getElementById('announcementList');
-            const data = await getAnnouncements(3);
-            if (data.length === 0) {
-                container.innerHTML = '<div class="bg-white p-6 rounded-3xl text-center border border-gray-100 text-gray-400 text-xs">ไม่มีประกาศใหม่</div>';
-                return;
-            }
-            container.innerHTML = data.map(a => `
-                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50 flex gap-4 items-center active:scale-95 transition-transform">
-                    <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
-                        <img src="${a.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&q=80'}" class="w-full h-full object-cover">
+            // Try cache first
+            const data = await getAnnouncements(3, true);
+            
+            const render = (items) => {
+                if (items.length === 0) {
+                    container.innerHTML = '<div class="bg-white p-6 rounded-3xl text-center border border-gray-100 text-gray-400 text-xs">ไม่มีประกาศใหม่</div>';
+                    return;
+                }
+                container.innerHTML = items.map(a => `
+                    <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50 flex gap-4 items-center active:scale-95 transition-transform">
+                        <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+                            <img src="${a.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&q=80'}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="flex-grow min-w-0">
+                            <h3 class="font-bold text-sm text-gray-800 truncate">${a.title}</h3>
+                            <p class="text-xs text-gray-500 line-clamp-1 mt-1">${a.content}</p>
+                            <p class="text-[10px] text-gray-400 mt-2">${a.date || ''}</p>
+                        </div>
                     </div>
-                    <div class="flex-grow min-w-0">
-                        <h3 class="font-bold text-sm text-gray-800 truncate">${a.title}</h3>
-                        <p class="text-xs text-gray-500 line-clamp-1 mt-1">${a.content}</p>
-                        <p class="text-[10px] text-gray-400 mt-2">${a.date || ''}</p>
-                    </div>
-                </div>
-            `).join('');
+                `).join('');
+            };
+
+            render(data);
+
+            // Background sync
+            getAnnouncements(3, false).then(freshData => {
+                render(freshData);
+            });
         }
 
         // Popup

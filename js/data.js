@@ -1,4 +1,3 @@
-// Authentication and Data Management for S.T. Progress
 import { 
     getAuth, 
     signInWithEmailAndPassword, 
@@ -20,40 +19,70 @@ import {
     limit, 
     getDoc,
     setDoc,
-    deleteDoc
+    deleteDoc,
+    enableIndexedDbPersistence
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { app } from "./firebase-config.js";
 
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+// Enable Offline Persistence for faster loading
+if (typeof window !== "undefined") {
+    enableIndexedDbPersistence(db).catch((err) => {
+        if (err.code == 'failed-precondition') {
+            console.warn("Persistence failed: Multiple tabs open");
+        } else if (err.code == 'unimplemented') {
+            console.warn("Persistence unimplemented in this browser");
+        }
+    });
+}
+
 const storage = getStorage(app);
 
-// --- Discord Webhooks ---
-const WEBHOOKS = {
-    good_deed: "https://discord.com/api/webhooks/1466822348358422671/B9-tLA3AMnfReZ-88GKnkQFFQTCFfpcPha4glXFPanCBfCJfs3KGQlQiXf_ZM1mxjeqZ",
-    report: "https://discord.com/api/webhooks/1466822966867132460/OnSF_IeBbhIj7WahZkX-JSnzXWfOEL0j9n6YXwpSPxYD525vGrSn2fFWTyCf0ROMKs3k",
-    admin_action: "https://discord.com/api/webhooks/1466822976207847556/NizRwGIGkL3EqyQEAKDrnl4H_f6UiGKvj1sqwKCWpm30HWcIg0OQ0Bvgf2VZrVq0cdue",
-    qr_scan: "https://discord.com/api/webhooks/1467136460506271863/McED-tyn4MGH53q1smhHqDf2phVOL9xK3KYUU6IGVeMPvvF6skpIEAt5Y9qPbhkbYHiy",
-    exchange: "https://discord.com/api/webhooks/1467911314536927363/TvoSxnqi71xqhcYzPrmGmSX1HKj89CBvJr5VvkAYTz3mPfBohTKQUFU_gqI9Pgo0pXYF",
-    new_user: "https://discord.com/api/webhooks/1477690061880426769/3kRf7dMZuem5JBtmEXZa6P1ILxoXonA5lJhz_wuWn-cogvLXOG5swe8pCu1JYMCGbRRf"
-};
+// --- Session Cache ---
+const userCache = new Map();
+let announcementsCache = null;
 
-const sendDiscordLog = async (webhookUrl, content, embed = null) => {
+// --- User Data with Cache-First + Background Sync ---
+export const getUserData = async (uid, useCache = true) => {
     try {
-        const payload = { content };
-        if (embed) payload.embeds = [embed];
-        await fetch(webhookUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        });
+        if (useCache && userCache.has(uid)) {
+            return { success: true, data: userCache.get(uid) };
+        }
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+            const data = userDoc.data();
+            userCache.set(uid, data);
+            return { success: true, data };
+        }
+        return { success: false, error: "User not found" };
     } catch (error) {
-        console.error("Discord log error:", error);
+        console.error("Error getting user data:", error);
+        return { success: false, error };
     }
 };
 
-// --- Auth ---
+// --- Announcements with Cache-First + Background Sync ---
+export const getAnnouncements = async (limitCount = 10, useCache = true) => {
+    try {
+        if (useCache && announcementsCache) {
+            return announcementsCache.slice(0, limitCount);
+        }
+        const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(limitCount));
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        announcementsCache = data;
+        return data;
+    } catch (error) {
+        console.error("Error getting announcements:", error);
+        if (announcementsCache) return announcementsCache.slice(0, limitCount);
+        return [];
+    }
+};
+
+// --- Auth Functions ---
 export const login = async (studentId, password) => {
     try {
         const email = studentId.includes('@') ? studentId : `${studentId}@st-kaona.com`;
@@ -61,42 +90,6 @@ export const login = async (studentId, password) => {
         return { success: true, user: userCredential.user };
     } catch (error) {
         console.error("Login error:", error);
-        return { success: false, error };
-    }
-};
-
-export const register = async (name, id, pass, role = 'student') => {
-    try {
-        const email = `${id}@st-kaona.com`;
-        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-        const user = userCredential.user;
-
-        await updateProfile(user, { displayName: name });
-        
-        const userData = {
-            displayName: name,
-            studentId: id,
-            role: role,
-            createdAt: new Date().toISOString(),
-            points: 0,
-            wasteStamps: 0
-        };
-        await setDoc(doc(db, "users", user.uid), userData);
-
-        await sendDiscordLog(WEBHOOKS.new_user, `🆕 **ผู้ลงทะเบียนใหม่**`, {
-            title: "ข้อมูลสมาชิกใหม่",
-            color: 3447003,
-            fields: [
-                { name: "ชื่อ", value: name, inline: true },
-                { name: "รหัสนักเรียน", value: id, inline: true },
-                { name: "สถานะ", value: role, inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        });
-
-        return { success: true, user };
-    } catch (error) {
-        console.error("Registration error:", error);
         return { success: false, error };
     }
 };
@@ -111,7 +104,7 @@ export const logout = async () => {
     }
 };
 
-// --- Activities ---
+// --- Features ---
 export const submitGoodDeed = async (uid, name, description) => {
     try {
         const docRef = await addDoc(collection(db, "activities"), {
@@ -122,17 +115,6 @@ export const submitGoodDeed = async (uid, name, description) => {
             timestamp: new Date(),
             status: 'pending'
         });
-
-        await sendDiscordLog(WEBHOOKS.good_deed, `✨ **บันทึกความดีใหม่**`, {
-            title: "รายละเอียดความดี",
-            color: 16776960,
-            fields: [
-                { name: "ผู้ทำความดี", value: name, inline: true },
-                { name: "รายละเอียด", value: description }
-            ],
-            timestamp: new Date().toISOString()
-        });
-
         return { success: true, id: docRef.id };
     } catch (error) {
         console.error("Error submitting good deed:", error);
@@ -140,78 +122,6 @@ export const submitGoodDeed = async (uid, name, description) => {
     }
 };
 
-export const addReward = async (uid, rewardName, cost) => {
-    try {
-        await sendDiscordLog(WEBHOOKS.exchange, `🎁 **การแลกของรางวัล**`, {
-            title: "รายละเอียดการแลก",
-            color: 15105570,
-            fields: [
-                { name: "รหัสผู้ใช้", value: uid, inline: true },
-                { name: "ของรางวัล", value: rewardName, inline: true },
-                { name: "จำนวนแต้มที่ใช้", value: `${cost} แสตมป์`, inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        });
-        return { success: true };
-    } catch (error) {
-        console.error("Error adding reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const scanQRCode = async (uid, name, type) => {
-    try {
-        const webhookUrl = type === 'morning' ? WEBHOOKS.qr_scan : WEBHOOKS.good_deed;
-        const title = type === 'morning' ? '☀️ เช็คชื่อยามเช้า' : '✨ สแกนกิจกรรม';
-        
-        await sendDiscordLog(webhookUrl, `📸 **การสแกน QR Code**`, {
-            title: title,
-            color: 3066993,
-            fields: [
-                { name: "ผู้สแกน", value: name, inline: true },
-                { name: "ประเภท", value: type, inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        });
-        return { success: true };
-    } catch (error) {
-        console.error("QR scan log error:", error);
-        return { success: false, error };
-    }
-};
-
-export const logAdminAction = async (adminName, action, target) => {
-    try {
-        await sendDiscordLog(WEBHOOKS.admin_action, `🛠️ **การกระทำของแอดมิน**`, {
-            title: "บันทึกการทำงานแอดมิน",
-            color: 9807270,
-            fields: [
-                { name: "แอดมิน", value: adminName, inline: true },
-                { name: "การกระทำ", value: action, inline: true },
-                { name: "เป้าหมาย", value: target || "ไม่ระบุ", inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        });
-        return { success: true };
-    } catch (error) {
-        console.error("Admin log error:", error);
-        return { success: false, error };
-    }
-};
-
-// --- Announcements ---
-export const getAnnouncements = async (limitCount = 10) => {
-    try {
-        const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(limitCount));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error("Error getting announcements:", error);
-        return [];
-    }
-};
-
-// --- Reports ---
 export const reportIssue = async (issueData, imageFile) => {
     try {
         let imageUrl = "";
@@ -220,7 +130,6 @@ export const reportIssue = async (issueData, imageFile) => {
             const snapshot = await uploadBytes(storageRef, imageFile);
             imageUrl = await getDownloadURL(snapshot.ref);
         }
-
         const docRef = await addDoc(collection(db, "reports"), {
             ...issueData,
             imageUrl,
@@ -228,35 +137,9 @@ export const reportIssue = async (issueData, imageFile) => {
             createdAt: new Date().toISOString(),
             timestamp: new Date()
         });
-
-        await sendDiscordLog(WEBHOOKS.report, `🚨 **แจ้งปัญหาใหม่**`, {
-            title: `หัวข้อ: ${issueData.title}`,
-            color: 15158332,
-            fields: [
-                { name: "หมวดหมู่", value: issueData.category, inline: true },
-                { name: "รายละเอียด", value: issueData.description }
-            ],
-            image: imageUrl ? { url: imageUrl } : null,
-            timestamp: new Date().toISOString()
-        });
-
         return { success: true, id: docRef.id };
     } catch (error) {
         console.error("Error reporting issue:", error);
-        return { success: false, error };
-    }
-};
-
-// --- User Profile ---
-export const getUserData = async (uid) => {
-    try {
-        const userDoc = await getDoc(doc(db, "users", uid));
-        if (userDoc.exists()) {
-            return { success: true, data: userDoc.data() };
-        }
-        return { success: false, error: "User not found" };
-    } catch (error) {
-        console.error("Error getting user data:", error);
         return { success: false, error };
     }
 };
@@ -269,22 +152,16 @@ export const updateUserData = async (uid, data, imageFile) => {
             const snapshot = await uploadBytes(storageRef, imageFile);
             photoURL = await getDownloadURL(snapshot.ref);
         }
-
         const userRef = doc(db, "users", uid);
         const updatePayload = { ...data };
         if (photoURL) updatePayload.photoURL = photoURL;
-        
         await updateDoc(userRef, updatePayload);
-        
-        // Also update Firebase Auth profile
+        if (userCache.has(uid)) userCache.set(uid, { ...userCache.get(uid), ...updatePayload });
         if (auth.currentUser) {
-            const profileUpdate = {
-                displayName: data.displayName
-            };
+            const profileUpdate = { displayName: data.displayName };
             if (photoURL) profileUpdate.photoURL = photoURL;
             await updateProfile(auth.currentUser, profileUpdate);
         }
-
         return { success: true, photoURL };
     } catch (error) {
         console.error("Error updating user data:", error);
@@ -292,94 +169,24 @@ export const updateUserData = async (uid, data, imageFile) => {
     }
 };
 
-// --- Admin Functions ---
-export const getReports = async () => {
+export const register = async (name, id, pass, role = 'student') => {
     try {
-        const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        const email = `${id}@st-kaona.com`;
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+        await updateProfile(user, { displayName: name });
+        const userData = {
+            displayName: name,
+            studentId: id,
+            role: role,
+            createdAt: new Date().toISOString(),
+            points: 0,
+            wasteStamps: 0
+        };
+        await setDoc(doc(db, "users", user.uid), userData);
+        return { success: true, user };
     } catch (error) {
-        console.error("Error getting reports:", error);
-        return [];
-    }
-};
-
-export const updateReportStatus = async (reportId, status) => {
-    try {
-        const reportRef = doc(db, "reports", reportId);
-        await updateDoc(reportRef, { status });
-        
-        await sendDiscordLog(WEBHOOKS.admin_action, `📝 **อัปเดตสถานะการแจ้งเหตุ**`, {
-            title: "การแก้ไขข้อมูลโดยแอดมิน",
-            color: 3447003,
-            fields: [
-                { name: "ไอดีรายงาน", value: reportId, inline: true },
-                { name: "สถานะใหม่", value: status, inline: true }
-            ],
-            timestamp: new Date().toISOString()
-        });
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating report status:", error);
-        return { success: false, error };
-    }
-};
-
-export const getRewards = async () => {
-    try {
-        const snapshot = await getDocs(collection(db, "rewards"));
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error("Error getting rewards:", error);
-        return [];
-    }
-};
-
-export const deleteReward = async (rewardId) => {
-    try {
-        await deleteDoc(doc(db, "rewards", rewardId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const addAdminReward = async (rewardData) => {
-    try {
-        const docRef = await addDoc(collection(db, "rewards"), {
-            ...rewardData,
-            createdAt: new Date().toISOString()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        console.error("Error adding reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const deleteReport = async (reportId) => {
-    try {
-        const reportRef = doc(db, "reports", reportId);
-        const reportSnap = await getDoc(reportRef);
-        const reportData = reportSnap.exists() ? reportSnap.data() : null;
-
-        await deleteDoc(reportRef);
-
-        if (reportData) {
-            await sendDiscordLog(WEBHOOKS.admin_action, `🗑️ **ลบรายการแจ้งปัญหา**`, {
-                title: "การลบข้อมูลโดยแอดมิน",
-                color: 15158332,
-                fields: [
-                    { name: "หัวข้อ", value: reportData.title, inline: true },
-                    { name: "หมวดหมู่", value: reportData.category, inline: true }
-                ],
-                timestamp: new Date().toISOString()
-            });
-        }
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting report:", error);
+        console.error("Registration error:", error);
         return { success: false, error };
     }
 };

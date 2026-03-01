@@ -134,26 +134,39 @@
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
-                const result = await getUserData(user.uid);
-                if (result.success) {
-                    const data = result.data;
-                    userName.textContent = data.displayName || 'ไม่มีชื่อ';
-                    userStudentId.textContent = `รหัส: ${data.studentId || '-'}`;
-                    userPoints.textContent = data.points || 0;
-                    userStamps.textContent = data.wasteStamps || 0;
-
-                    if (data.photoURL) {
-                        userPhoto.src = data.photoURL;
-                        userPhoto.classList.remove('hidden');
-                        userInitials.classList.add('hidden');
-                    } else if (data.displayName) {
-                        userInitials.textContent = data.displayName.charAt(0).toUpperCase();
-                    }
+                // Initial load from cache
+                const initialResult = await getUserData(user.uid, true);
+                if (initialResult.success) {
+                    updateProfileUI(initialResult.data);
                 }
+
+                // Background refresh from server
+                getUserData(user.uid, false).then(result => {
+                    if (result.success) {
+                        updateProfileUI(result.data);
+                    }
+                });
             } else {
                 window.location.href = 'login.html';
             }
         });
+
+        function updateProfileUI(data) {
+            userName.textContent = data.displayName || 'ไม่มีชื่อ';
+            userStudentId.textContent = `รหัส: ${data.studentId || '-'}`;
+            userPoints.textContent = data.points || 0;
+            userStamps.textContent = data.wasteStamps || 0;
+
+            if (data.photoURL) {
+                userPhoto.src = data.photoURL;
+                userPhoto.classList.remove('hidden');
+                userInitials.classList.add('hidden');
+            } else if (data.displayName) {
+                userInitials.textContent = data.displayName.charAt(0).toUpperCase();
+                userPhoto.classList.add('hidden');
+                userInitials.classList.remove('hidden');
+            }
+        }
 
         logoutBtn.addEventListener('click', () => {
             if(confirm('ยืนยันการออกจากระบบ?')) {
