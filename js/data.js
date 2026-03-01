@@ -111,4 +111,49 @@ export const reportIssue = async (issueData, imageFile) => {
     }
 };
 
+// --- User Profile ---
+export const getUserData = async (uid) => {
+    try {
+        const userDoc = await getDoc(doc(db, "users", uid));
+        if (userDoc.exists()) {
+            return { success: true, data: userDoc.data() };
+        }
+        return { success: false, error: "User not found" };
+    } catch (error) {
+        console.error("Error getting user data:", error);
+        return { success: false, error };
+    }
+};
+
+export const updateUserData = async (uid, data, imageFile) => {
+    try {
+        let photoURL = data.photoURL || "";
+        if (imageFile) {
+            const storageRef = ref(storage, `profiles/${uid}_${Date.now()}`);
+            const snapshot = await uploadBytes(storageRef, imageFile);
+            photoURL = await getDownloadURL(snapshot.ref);
+        }
+
+        const userRef = doc(db, "users", uid);
+        const updatePayload = { ...data };
+        if (photoURL) updatePayload.photoURL = photoURL;
+        
+        await updateDoc(userRef, updatePayload);
+        
+        // Also update Firebase Auth profile
+        if (auth.currentUser) {
+            const profileUpdate = {
+                displayName: data.displayName
+            };
+            if (photoURL) profileUpdate.photoURL = photoURL;
+            await updateProfile(auth.currentUser, profileUpdate);
+        }
+
+        return { success: true, photoURL };
+    } catch (error) {
+        console.error("Error updating user data:", error);
+        return { success: false, error };
+    }
+};
+
 export { auth, db, storage };
