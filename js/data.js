@@ -1,4 +1,12 @@
-// Firebase and Data Management for S.T. Progress
+// Authentication and Data Management for S.T. Progress
+import { 
+    getAuth, 
+    signInWithEmailAndPassword, 
+    signOut, 
+    onAuthStateChanged,
+    createUserWithEmailAndPassword,
+    updateProfile
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { 
     getFirestore, 
     collection, 
@@ -7,16 +15,79 @@ import {
     updateDoc, 
     doc, 
     query, 
-    orderBy,
+    where, 
+    orderBy, 
+    limit, 
+    getDoc,
+    setDoc,
     deleteDoc
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { app } from "./firebase-config.js";
 
+const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
-// Helpdesk / Reports System
+// --- Auth ---
+export const login = async (studentId, password) => {
+    try {
+        const email = studentId.includes('@') ? studentId : `${studentId}@st-kaona.com`;
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        return { success: true, user: userCredential.user };
+    } catch (error) {
+        console.error("Login error:", error);
+        return { success: false, error };
+    }
+};
+
+export const register = async (name, id, pass, role = 'student') => {
+    try {
+        const email = `${id}@st-kaona.com`;
+        const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+        const user = userCredential.user;
+
+        await updateProfile(user, { displayName: name });
+        
+        await setDoc(doc(db, "users", user.uid), {
+            displayName: name,
+            studentId: id,
+            role: role,
+            createdAt: new Date().toISOString(),
+            points: 0,
+            wasteStamps: 0
+        });
+
+        return { success: true, user };
+    } catch (error) {
+        console.error("Registration error:", error);
+        return { success: false, error };
+    }
+};
+
+export const logout = async () => {
+    try {
+        await signOut(auth);
+        localStorage.clear();
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
+};
+
+// --- Announcements ---
+export const getAnnouncements = async (limitCount = 10) => {
+    try {
+        const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(limitCount));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error getting announcements:", error);
+        return [];
+    }
+};
+
+// --- Reports ---
 export const reportIssue = async (issueData, imageFile) => {
     try {
         let imageUrl = "";
@@ -29,7 +100,7 @@ export const reportIssue = async (issueData, imageFile) => {
         const docRef = await addDoc(collection(db, "reports"), {
             ...issueData,
             imageUrl,
-            status: "pending", // pending, fixed
+            status: "pending",
             createdAt: new Date().toISOString(),
             timestamp: new Date()
         });
@@ -40,96 +111,4 @@ export const reportIssue = async (issueData, imageFile) => {
     }
 };
 
-export const getReports = async () => {
-    try {
-        const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => {
-            const data = doc.data();
-            return { 
-                id: doc.id, 
-                ...data,
-                // Ensure createdAt is a valid string for Date constructor if it's a Firestore Timestamp
-                createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate().toISOString() : data.createdAt 
-            };
-        });
-    } catch (error) {
-        console.error("Error getting reports:", error);
-        return [];
-    }
-};
-
-export const deleteReport = async (reportId) => {
-    try {
-        await deleteDoc(doc(db, "reports", reportId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting report:", error);
-        return { success: false, error };
-    }
-};
-
-export const updateReportStatus = async (reportId, status) => {
-    try {
-        const reportRef = doc(db, "reports", reportId);
-        await updateDoc(reportRef, { status });
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating report:", error);
-        return { success: false, error };
-    }
-};
-
-// Gift Inventory System
-export const addReward = async (rewardData, imageFile) => {
-    try {
-        let imageUrl = rewardData.imageUrl || "";
-        if (imageFile) {
-            const storageRef = ref(storage, `rewards/${Date.now()}_${imageFile.name}`);
-            const snapshot = await uploadBytes(storageRef, imageFile);
-            imageUrl = await getDownloadURL(snapshot.ref);
-        }
-
-        const docRef = await addDoc(collection(db, "rewards"), {
-            ...rewardData,
-            imageUrl,
-            createdAt: new Date().toISOString()
-        });
-        return { success: true, id: docRef.id };
-    } catch (error) {
-        console.error("Error adding reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const getRewards = async () => {
-    try {
-        const q = query(collection(db, "rewards"), orderBy("createdAt", "desc"));
-        const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error("Error getting rewards:", error);
-        return [];
-    }
-};
-
-export const deleteReward = async (rewardId) => {
-    try {
-        await deleteDoc(doc(db, "rewards", rewardId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const updateReward = async (rewardId, updateData) => {
-    try {
-        const rewardRef = doc(db, "rewards", rewardId);
-        await updateDoc(rewardRef, updateData);
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating reward:", error);
-        return { success: false, error };
-    }
-};
+export { auth, db, storage };

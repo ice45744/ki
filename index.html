@@ -8,78 +8,50 @@
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Keep only page-specific overrides if any, but most moved to style.css */
-    </style>
-    <link rel="prefetch" href="login.html">
-    <link rel="prefetch" href="register.html">
-    <link rel="prefetch" href="report.html">
-    <link rel="prefetch" href="profile.html">
-    <link rel="prefetch" href="points.html">
-    <link rel="prefetch" href="announcements.html">
 </head>
-<body class="min-h-screen flex flex-col">
-    <!-- Main Content -->
+<body class="min-h-screen flex flex-col bg-[#f8faff]">
     <main class="flex-grow pb-24">
         <!-- Header Section -->
-        <div class="bg-blue-600 text-white pt-10 pb-10 px-6 rounded-b-[2rem] relative z-20 shadow-blue-900/20 shadow-xl">
+        <div class="bg-blue-600 text-white pt-10 pb-10 px-6 rounded-b-[2rem] relative z-20 shadow-xl">
             <div class="flex justify-between items-center">
                 <div class="flex items-center gap-4">
                     <div class="relative">
-                        <button id="profileBtn" class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-blue-300 overflow-hidden focus:outline-none relative z-[10000] shadow-sm transition-transform active:scale-95">
-                            K
+                        <button id="profileBtn" class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-blue-300 overflow-hidden shadow-sm transition-transform active:scale-95">
+                            <i class="fas fa-user text-white"></i>
                         </button>
                         <!-- Profile Dropdown -->
-                        <div id="profileDropdown" class="profile-dropdown p-4 border border-gray-100 dark:border-slate-700">
-                            <div class="space-y-3">
+                        <div id="profileDropdown" class="profile-dropdown p-4 border border-gray-100">
+                            <div class="space-y-3 text-gray-800">
                                 <div class="flex items-center gap-3 px-1 mb-2">
-                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600">K</div>
+                                    <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center text-xs font-bold text-blue-600">
+                                        <i class="fas fa-user"></i>
+                                    </div>
                                     <div>
-                                        <p class="text-xs font-bold text-gray-800 dark:text-white" id="dropdownUserName">Kittipot Ice</p>
-                                        <p class="text-[8px] text-gray-400">นักเรียน</p>
+                                        <p class="text-xs font-bold" id="dropdownUserName">นักเรียน</p>
+                                        <p class="text-[8px] text-gray-400">สมาชิก</p>
                                     </div>
                                 </div>
-                                <hr class="border-gray-100 dark:border-slate-700">
-                                <a href="profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
+                                <hr class="border-gray-100">
+                                <a href="profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors">
                                     <i class="fas fa-user-circle text-blue-500"></i>
                                     โปรไฟล์
                                 </a>
-                                <a href="edit-profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
+                                <a href="edit-profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors">
                                     <i class="fas fa-user-edit text-blue-500"></i>
                                     แก้ไขข้อมูล
                                 </a>
                                 
-                                <!-- Admin Section Grouped -->
                                 <div id="adminSection" class="hidden flex-col gap-2 pt-2">
-                                    <hr class="border-gray-100 dark:border-slate-700 mb-2">
-                                    <p class="text-[10px] text-indigo-500 uppercase font-bold px-1">ผู้ดูแลระบบ (Admin)</p>
+                                    <hr class="border-gray-100 mb-2">
+                                    <p class="text-[10px] text-indigo-500 uppercase font-bold px-1">ผู้ดูแลระบบ</p>
                                     <a href="admin-dashboard.html" class="flex items-center gap-3 text-xs font-bold text-indigo-600 hover:bg-indigo-50 p-2 rounded-xl transition-all">
                                         <i class="fas fa-user-shield w-4"></i>
                                         แดชบอร์ดแอดมิน
                                     </a>
                                 </div>
 
-                                <hr class="border-gray-100 dark:border-slate-700">
-                                <p class="text-[10px] text-gray-400 uppercase font-bold px-1">ทางลัดด่วน</p>
-                                <div id="quickShortcuts" class="grid grid-cols-1 gap-2">
-                                    <a href="points.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
-                                        <i class="fas fa-star text-yellow-500 w-4"></i>
-                                        สะสมแต้มความดี
-                                    </a>
-                                    <a href="report.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
-                                        <i class="fas fa-bullhorn text-orange-500 w-4"></i>
-                                        แจ้งเรื่องร้องเรียน
-                                    </a>
-                                </div>
-                                <hr class="border-gray-100 dark:border-slate-700">
-                                <button id="darkModeToggle" class="w-full flex items-center justify-between text-xs font-medium py-1 text-gray-600">
-                                    <span>โหมดมืด (Dark Mode)</span>
-                                    <i class="fas fa-moon text-blue-500"></i>
-                                </button>
-                                <button class="w-full text-left text-xs font-medium text-indigo-500 mt-2 py-1" onclick="localStorage.setItem('userRole', 'admin'); location.reload();">
-                                    <i class="fas fa-magic mr-2"></i>เปิดโหมด Admin (เดโม)
-                                </button>
-                                <button class="w-full text-left text-xs font-medium text-red-500 mt-1 py-1" onclick="localStorage.clear(); window.location.href='login.html'">
+                                <hr class="border-gray-100">
+                                <button id="logoutBtn" class="w-full text-left text-xs font-medium text-red-500 mt-2 py-1">
                                     <i class="fas fa-sign-out-alt mr-2"></i>ออกจากระบบ
                                 </button>
                             </div>
@@ -87,51 +59,19 @@
                     </div>
                     <div>
                         <p class="text-blue-100 text-[10px] font-light opacity-80">ยินดีต้อนรับกลับมา</p>
-                        <h1 class="text-lg font-bold leading-tight tracking-tight" id="userName">นักเรียน</h1>
-                        <p class="text-blue-200 text-[10px] font-medium opacity-90" id="studentId">ยังไม่ได้เข้าสู่ระบบ</p>
-                    </div>
-                </div>
-                <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/10 relative">
-                        <i class="fas fa-bell text-sm text-blue-100"></i>
+                        <h1 class="text-lg font-bold leading-tight" id="userName">กำลังโหลด...</h1>
+                        <p class="text-blue-200 text-[10px] font-medium opacity-90" id="studentId">-</p>
                     </div>
                 </div>
             </div>
         </div>
 
-        <script type="module">
-            import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-            import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-            import { app } from "./js/firebase-config.js";
-
-            const auth = getAuth(app);
-            const db = getFirestore(app);
-
-            onAuthStateChanged(auth, async (user) => {
-                if (user) {
-                    const userDoc = await getDoc(doc(db, "users", user.uid));
-                    if (userDoc.exists()) {
-                        const userData = userDoc.data();
-                        document.getElementById('userName').textContent = userData.displayName || user.displayName || 'นักเรียน';
-                        document.getElementById('dropdownUserName').textContent = userData.displayName || user.displayName || 'นักเรียน';
-                        document.getElementById('studentId').textContent = `รหัสนักเรียน: ${userData.studentId || '-'}`;
-                        if (userData.role === 'admin') {
-                            localStorage.setItem('userRole', 'admin');
-                            document.getElementById('adminSection')?.classList.remove('hidden');
-                        }
-                    }
-                } else {
-                    // Not logged in - maybe redirect or show guest
-                }
-            });
-        </script>
-
         <!-- Announcements Section -->
         <div class="px-6 mt-8">
             <div class="flex justify-between items-center mb-4">
-                <h2 class="font-bold text-sm flex items-center gap-2">
+                <h2 class="font-bold text-sm flex items-center gap-2 text-gray-800">
                     <i class="far fa-bell text-blue-500"></i>
-                    ประกาศจากสภานักเรียน
+                    ประกาศล่าสุด
                 </h2>
                 <a href="announcements.html" class="text-blue-500 text-xs">ดูทั้งหมด</a>
             </div>
@@ -144,54 +84,54 @@
 
         <!-- Menu Grid -->
         <div class="px-6 mt-8 grid grid-cols-2 gap-4">
-            <a href="points.html" class="bg-blue-50 p-5 rounded-3xl flex flex-col items-start gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm">
-                    <i class="fas fa-clipboard-list text-blue-600 text-sm"></i>
+            <a href="points.html" class="bg-blue-50 p-5 rounded-3xl flex flex-col items-start gap-2 active:scale-95 transition-transform">
+                <div class="bg-white p-2 rounded-lg shadow-sm text-blue-600">
+                    <i class="fas fa-clipboard-list"></i>
                 </div>
                 <span class="font-medium text-blue-900 text-sm">บันทึกกิจกรรม</span>
             </a>
-            <a href="report.html" class="bg-orange-50 p-5 rounded-3xl flex flex-col items-start gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm">
-                    <i class="fas fa-exclamation-triangle text-orange-500 text-sm"></i>
+            <a href="report.html" class="bg-orange-50 p-5 rounded-3xl flex flex-col items-start gap-2 active:scale-95 transition-transform">
+                <div class="bg-white p-2 rounded-lg shadow-sm text-orange-500">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
                 <span class="font-medium text-orange-900 text-sm">แจ้งเรื่องร้องเรียน</span>
             </a>
-            <a href="guide.html" class="bg-gray-50 p-5 rounded-3xl flex flex-col items-start gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm">
-                    <i class="fas fa-book-open text-gray-600 text-sm"></i>
+            <a href="guide.html" class="bg-gray-50 p-5 rounded-3xl flex flex-col items-start gap-2 active:scale-95 transition-transform">
+                <div class="bg-white p-2 rounded-lg shadow-sm text-gray-600">
+                    <i class="fas fa-book-open"></i>
                 </div>
                 <span class="font-medium text-gray-900 text-sm">คู่มือการใช้งาน</span>
             </a>
-            <a href="profile.html" class="bg-green-50 p-5 rounded-3xl flex flex-col items-start gap-2">
-                <div class="bg-white p-2 rounded-lg shadow-sm">
-                    <i class="fas fa-user-cog text-green-600 text-sm"></i>
+            <a href="profile.html" class="bg-green-50 p-5 rounded-3xl flex flex-col items-start gap-2 active:scale-95 transition-transform">
+                <div class="bg-white p-2 rounded-lg shadow-sm text-green-600">
+                    <i class="fas fa-user-cog"></i>
                 </div>
                 <span class="font-medium text-green-900 text-sm">จัดการโปรไฟล์</span>
             </a>
         </div>
     </main>
 
-    <!-- Bottom Navigation -->
+    <!-- Bottom Nav -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50 h-20">
-        <a href="index.html" class="nav-item active">
-            <i class="fas fa-home"></i>
-            <span>หน้าหลัก</span>
+        <a href="index.html" class="nav-item active text-blue-600">
+            <i class="fas fa-home text-xl mb-1"></i>
+            <span class="text-[10px]">หน้าหลัก</span>
         </a>
-        <a href="points.html" class="nav-item">
-            <i class="fas fa-tasks"></i>
-            <span>กิจกรรม</span>
+        <a href="points.html" class="nav-item text-gray-400">
+            <i class="fas fa-tasks text-xl mb-1"></i>
+            <span class="text-[10px]">กิจกรรม</span>
         </a>
-        <a href="announcements.html" class="nav-item">
-            <i class="fas fa-bullhorn"></i>
-            <span>ประกาศ</span>
+        <a href="announcements.html" class="nav-item text-gray-400">
+            <i class="fas fa-bullhorn text-xl mb-1"></i>
+            <span class="text-[10px]">ประกาศ</span>
         </a>
-        <a href="report.html" class="nav-item">
-            <i class="fas fa-exclamation-circle"></i>
-            <span>แจ้งปัญหา</span>
+        <a href="report.html" class="nav-item text-gray-400">
+            <i class="fas fa-exclamation-circle text-xl mb-1"></i>
+            <span class="text-[10px]">แจ้งปัญหา</span>
         </a>
-        <a href="profile.html" class="nav-item">
-            <i class="fas fa-user-circle"></i>
-            <span>โปรไฟล์</span>
+        <a href="profile.html" class="nav-item text-gray-400">
+            <i class="fas fa-user-circle text-xl mb-1"></i>
+            <span class="text-[10px]">โปรไฟล์</span>
         </a>
     </nav>
 
@@ -200,7 +140,7 @@
         <div class="bg-white w-full max-w-sm rounded-[2.5rem] overflow-hidden shadow-2xl transform scale-90 transition-transform duration-300" id="popupContent">
             <div class="relative h-48 bg-gray-200">
                 <img id="popupImg" src="" alt="News" class="w-full h-full object-cover">
-                <button onclick="closePopup()" class="absolute top-4 right-4 w-8 h-8 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors">
+                <button id="closePopupBtn" class="absolute top-4 right-4 w-8 h-8 bg-black/20 hover:bg-black/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-colors">
                     <i class="fas fa-times"></i>
                 </button>
             </div>
@@ -211,119 +151,101 @@
                 </div>
                 <h3 id="popupTitle" class="text-xl font-bold text-gray-800 mb-3 leading-tight"></h3>
                 <p id="popupText" class="text-sm text-gray-500 leading-relaxed mb-8 line-clamp-4"></p>
-                <button onclick="closePopup()" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
+                <button id="closePopupConfirmBtn" class="w-full bg-blue-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all">
                     รับทราบ
                 </button>
             </div>
         </div>
     </div>
 
-    <!-- Scripts -->
     <script type="module">
-        import { collection, getDocs, query, where, orderBy, limit, getFirestore } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { app } from "./js/firebase-config.js";
+        import { auth, db, logout, getAnnouncements } from "./js/data.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { doc, getDoc, query, collection, where, orderBy, limit, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const db = getFirestore(app);
-
-        // Load Announcements
-        async function loadAnnouncements() {
-            const container = document.getElementById('announcementList');
-            try {
-                const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(3));
-                const snapshot = await getDocs(q);
-                
-                if (snapshot.empty) {
-                    container.innerHTML = `
-                        <div class="bg-white p-6 rounded-3xl text-center border border-dashed border-gray-200">
-                            <p class="text-gray-400 text-xs">ยังไม่มีประกาศใหม่</p>
-                        </div>
-                    `;
-                    return;
+        // Auth Protection
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                const userDoc = await getDoc(doc(db, "users", user.uid));
+                if (userDoc.exists()) {
+                    const userData = userDoc.data();
+                    document.getElementById('userName').textContent = userData.displayName || 'นักเรียน';
+                    document.getElementById('dropdownUserName').textContent = userData.displayName || 'นักเรียน';
+                    document.getElementById('studentId').textContent = `รหัสนักเรียน: ${userData.studentId || '-'}`;
+                    
+                    if (userData.role === 'admin') {
+                        document.getElementById('adminSection')?.classList.remove('hidden');
+                        document.getElementById('adminSection')?.classList.add('flex');
+                    }
                 }
-
-                container.innerHTML = '';
-                snapshot.forEach(doc => {
-                    const data = doc.data();
-                    const card = document.createElement('div');
-                    card.className = 'bg-white p-4 rounded-2xl shadow-sm border border-gray-50 flex gap-4 items-center';
-                    card.innerHTML = `
-                        <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
-                            <img src="${data.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&q=80'}" class="w-full h-full object-cover">
-                        </div>
-                        <div class="flex-grow min-w-0">
-                            <h3 class="font-bold text-sm text-gray-800 truncate">${data.title}</h3>
-                            <p class="text-xs text-gray-500 line-clamp-1 mt-1">${data.content}</p>
-                            <p class="text-[10px] text-gray-400 mt-2">${data.date || ''}</p>
-                        </div>
-                    `;
-                    container.appendChild(card);
-                });
-            } catch (e) {
-                console.error("Load announcements error:", e);
-                container.innerHTML = '<p class="text-center text-xs text-red-400">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
+                renderAnnouncements();
+                checkPopup();
+            } else {
+                window.location.href = 'login.html';
             }
+        });
+
+        // Logout
+        document.getElementById('logoutBtn')?.addEventListener('click', logout);
+
+        // Announcements
+        async function renderAnnouncements() {
+            const container = document.getElementById('announcementList');
+            const data = await getAnnouncements(3);
+            if (data.length === 0) {
+                container.innerHTML = '<div class="bg-white p-6 rounded-3xl text-center border border-gray-100 text-gray-400 text-xs">ไม่มีประกาศใหม่</div>';
+                return;
+            }
+            container.innerHTML = data.map(a => `
+                <div class="bg-white p-4 rounded-2xl shadow-sm border border-gray-50 flex gap-4 items-center active:scale-95 transition-transform">
+                    <div class="w-16 h-16 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+                        <img src="${a.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=200&q=80'}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="flex-grow min-w-0">
+                        <h3 class="font-bold text-sm text-gray-800 truncate">${a.title}</h3>
+                        <p class="text-xs text-gray-500 line-clamp-1 mt-1">${a.content}</p>
+                        <p class="text-[10px] text-gray-400 mt-2">${a.date || ''}</p>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        loadAnnouncements();
-
-        // Popup Logic
+        // Popup
         async function checkPopup() {
             try {
                 const q = query(collection(db, "announcements"), where("isPopup", "==", true), orderBy("timestamp", "desc"), limit(1));
                 const snapshot = await getDocs(q);
-                
                 if (!snapshot.empty) {
                     const data = snapshot.docs[0].data();
-                    const popupId = snapshot.docs[0].id;
-                    
-                    if (sessionStorage.getItem('seen_popup_' + popupId) !== 'true') {
-                        showPopup(data, popupId);
+                    const id = snapshot.docs[0].id;
+                    if (sessionStorage.getItem('popup_' + id) !== 'true') {
+                        showPopup(data, id);
                     }
                 }
-            } catch (e) { console.error("Popup error:", e); }
+            } catch (e) { console.error(e); }
         }
 
         function showPopup(news, id) {
             document.getElementById('popupTitle').textContent = news.title;
             document.getElementById('popupText').textContent = news.content;
-            document.getElementById('popupImg').src = news.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80';
+            document.getElementById('popupImg').src = news.image || '';
             document.getElementById('popupDate').textContent = news.date;
+            document.getElementById('popupOverlay').classList.remove('hidden');
             
-            const overlay = document.getElementById('popupOverlay');
-            overlay.classList.remove('hidden');
-            setTimeout(() => {
-                const content = document.getElementById('popupContent');
-                if (content) {
-                    content.classList.remove('scale-90');
-                    content.classList.add('scale-100');
-                }
-            }, 10);
-
-            window.closePopup = () => {
-                const content = document.getElementById('popupContent');
-                if (content) {
-                    content.classList.remove('scale-100');
-                    content.classList.add('scale-90');
-                }
-                setTimeout(() => {
-                    overlay.classList.add('hidden');
-                    sessionStorage.setItem('seen_popup_' + id, 'true');
-                }, 200);
+            const close = () => {
+                document.getElementById('popupOverlay').classList.add('hidden');
+                sessionStorage.setItem('popup_' + id, 'true');
             };
+            document.getElementById('closePopupBtn').onclick = close;
+            document.getElementById('closePopupConfirmBtn').onclick = close;
         }
 
-        checkPopup();
-
-        // Admin check
-        window.addEventListener('load', () => {
-            const userRole = localStorage.getItem('userRole');
-            const adminSection = document.getElementById('adminSection');
-            if (userRole === 'admin' && adminSection) {
-                adminSection.classList.remove('hidden');
-                adminSection.classList.add('flex');
-            }
+        // Dropdown Toggle
+        document.getElementById('profileBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('profileDropdown').classList.toggle('show');
         });
+        window.onclick = () => document.getElementById('profileDropdown').classList.remove('show');
     </script>
-    <script src="js/theme.js"></script>
 </body>
 </html>
