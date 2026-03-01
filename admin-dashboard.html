@@ -3,308 +3,97 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - S.T. ก้าวหน้า</title>
+    <title>S.T. ก้าวหน้า - แผงควบคุมแอดมิน</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Sidebar / Navigation (Desktop) -->
-    <div class="flex">
-        <!-- Main Content -->
-        <main class="flex-1 p-4 md:p-8 pb-24">
-            <header class="mb-8 flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">แผงควบคุมแอดมิน</h1>
-                    <p class="text-sm text-gray-500">จัดการข้อมูลนักเรียนและคะแนนสะสม</p>
-                </div>
-                <a href="index.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                    <i class="fas fa-arrow-left mr-1"></i> กลับหน้าหลัก
-                </a>
-            </header>
-
-            <!-- Stats Overview (Optional but good for Dashboard) -->
-            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">
-                <a href="admin-announcements.html" class="bg-blue-600 p-6 rounded-3xl shadow-lg shadow-blue-100 flex items-center gap-4 text-white hover:bg-blue-700 transition-all group">
-                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-bullhorn text-xl group-hover:scale-110 transition-transform"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-blue-100 uppercase font-bold tracking-wider">ประชาสัมพันธ์</p>
-                        <h3 class="text-lg font-bold leading-tight">จัดการข่าวสาร</h3>
-                    </div>
-                </a>
-                <a href="admin-qr-generator.html" class="bg-indigo-600 p-6 rounded-3xl shadow-lg shadow-indigo-100 flex items-center gap-4 text-white hover:bg-indigo-700 transition-all group">
-                    <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center">
-                        <i class="fas fa-qrcode text-xl group-hover:scale-110 transition-transform"></i>
-                    </div>
-                    <div>
-                        <p class="text-[10px] text-indigo-100 uppercase font-bold tracking-wider">ระบบเช็คชื่อ</p>
-                        <h3 class="text-lg font-bold leading-tight">สร้าง QR Code</h3>
-                    </div>
-                </a>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-blue-100 rounded-2xl flex items-center justify-center text-blue-600">
-                            <i class="fas fa-users text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">นักเรียน</p>
-                            <h3 class="text-xl font-bold" id="totalStudents">0</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-yellow-100 rounded-2xl flex items-center justify-center text-yellow-600">
-                            <i class="fas fa-star text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">คะแนนความดีรวม</p>
-                            <h3 class="text-xl font-bold" id="totalGoodPoints">0</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="flex items-center gap-4">
-                        <div class="w-12 h-12 bg-green-100 rounded-2xl flex items-center justify-center text-green-600">
-                            <i class="fas fa-recycle text-xl"></i>
-                        </div>
-                        <div>
-                            <p class="text-xs text-gray-500">แต้มขยะรวม</p>
-                            <h3 class="text-xl font-bold" id="totalWasteStamps">0</h3>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Student Table Section -->
-            <div class="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-6 border-b border-gray-50 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <h2 class="font-bold text-lg text-gray-800">รายชื่อนักเรียน</h2>
-                    
-                    <!-- Search Bar -->
-                    <div class="relative w-full md:w-72">
-                        <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-gray-400">
-                            <i class="fas fa-search"></i>
-                        </span>
-                        <input type="text" id="studentSearch" placeholder="ค้นหาชื่อ หรือ เลขประจำตัว..." 
-                               class="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all">
-                    </div>
-                </div>
-
-                <!-- Table -->
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-gray-50 text-gray-500 text-[11px] uppercase tracking-wider font-bold">
-                                <th class="px-6 py-4">ลำดับ</th>
-                                <th class="px-6 py-4">เลขประจำตัว</th>
-                                <th class="px-6 py-4">ชื่อ-นามสกุล</th>
-                                <th class="px-6 py-4 text-center">คะแนนความดี</th>
-                                <th class="px-6 py-4 text-center">แต้มธนาคารขยะ</th>
-                                <th class="px-6 py-4 text-right">จัดการ</th>
-                            </tr>
-                        </thead>
-                        <tbody id="studentTableBody" class="divide-y divide-gray-50">
-                            <!-- Data will be populated by JS -->
-                        </tbody>
-                    </table>
-                </div>
-
-                <!-- Pagination -->
-                <div class="p-6 border-t border-gray-50 flex items-center justify-between">
-                    <p class="text-xs text-gray-500" id="paginationInfo">กำลังแสดง 0 ถึง 0 จาก 0 คน</p>
-                    <div class="flex gap-2">
-                        <button id="prevPage" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            ก่อนหน้า
-                        </button>
-                        <button id="nextPage" class="px-3 py-1.5 rounded-lg border border-gray-200 text-xs font-medium text-gray-600 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed">
-                            ถัดไป
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </main>
-    </div>
-
-    <!-- Point Management Modal -->
-    <div id="pointModal" class="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-[2rem] p-8 shadow-2xl scale-95 transition-transform duration-300 ease-out" id="modalContent">
-            <div class="flex justify-between items-center mb-6">
-                <h3 class="text-xl font-bold text-gray-800">จัดการแต้ม</h3>
-                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            
-            <div class="mb-6">
-                <p class="text-sm text-gray-500 mb-1">นักเรียน:</p>
-                <p class="font-bold text-gray-800" id="modalStudentName">-</p>
-                <p class="text-xs text-blue-600" id="modalStudentId">ID: -</p>
-            </div>
-
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">คะแนนความดี</label>
-                    <div class="flex items-center gap-3">
-                        <button onclick="adjustPoint('good', -1)" class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">-</button>
-                        <input type="number" id="inputGoodPoints" class="flex-1 text-center font-bold text-lg bg-gray-50 border-none rounded-xl py-2" value="0">
-                        <button onclick="adjustPoint('good', 1)" class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600 hover:bg-blue-200">+</button>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 uppercase mb-2">แต้มธนาคารขยะ</label>
-                    <div class="flex items-center gap-3">
-                        <button onclick="adjustPoint('waste', -1)" class="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-gray-200">-</button>
-                        <input type="number" id="inputWasteStamps" class="flex-1 text-center font-bold text-lg bg-gray-50 border-none rounded-xl py-2" value="0">
-                        <button onclick="adjustPoint('waste', 1)" class="w-10 h-10 rounded-xl bg-green-100 flex items-center justify-center text-green-600 hover:bg-green-200">+</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-8 flex gap-3">
-                <button onclick="savePoints()" class="flex-1 bg-blue-600 text-white py-3 rounded-2xl font-bold shadow-lg shadow-blue-200 hover:bg-blue-700 transition-colors">
-                    บันทึกข้อมูล
-                </button>
+<body class="min-h-screen bg-gray-50 flex flex-col pb-24">
+    <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-[2.5rem] shadow-lg">
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-white/80"><i class="fas fa-chevron-left text-xl"></i></a>
+            <div>
+                <h1 class="text-xl font-bold">แผงควบคุมแอดมิน</h1>
+                <p class="text-indigo-100 text-xs">จัดการระบบสภานักเรียน</p>
             </div>
         </div>
     </div>
 
-    <script type="module">
-        // Mock Data for Students (In a real app, this would come from Firebase)
-        const mockStudents = Array.from({ length: 50 }, (_, i) => ({
-            id: `100${String(i + 1).padStart(2, '0')}`,
-            name: i % 2 === 0 ? `สมชาย ใจดี ${i+1}` : `สมหญิง รักเรียน ${i+1}`,
-            goodPoints: Math.floor(Math.random() * 500),
-            wasteStamps: Math.floor(Math.random() * 100)
-        }));
+    <div class="p-6 grid grid-cols-1 gap-6">
+        <div class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-50">
+            <h2 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
+                <i class="fas fa-chart-pie text-indigo-500"></i>
+                ภาพรวมระบบ
+            </h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div class="bg-indigo-50 p-4 rounded-2xl">
+                    <p class="text-[10px] text-indigo-600 font-bold uppercase">นักเรียนทั้งหมด</p>
+                    <p class="text-2xl font-bold text-indigo-900">1,240</p>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-2xl">
+                    <p class="text-[10px] text-emerald-600 font-bold uppercase">กิจกรรมวันนี้</p>
+                    <p class="text-2xl font-bold text-emerald-900">45</p>
+                </div>
+            </div>
+        </div>
 
-        let students = [...mockStudents];
-        let filteredStudents = [...students];
-        let currentPage = 1;
-        const rowsPerPage = 10;
-        let selectedStudentId = null;
+        <div class="grid grid-cols-2 gap-4">
+            <a href="admin-reports.html" class="bg-white p-6 rounded-3xl shadow-sm border border-orange-50 flex flex-col items-center gap-3 text-center">
+                <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 text-xl shadow-sm">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">รายการแจ้งเหตุ</span>
+                    <span class="text-[10px] text-gray-400">จัดการข้อร้องเรียน</span>
+                </div>
+            </a>
+            <a href="admin-inventory.html" class="bg-white p-6 rounded-3xl shadow-sm border border-blue-50 flex flex-col items-center gap-3 text-center">
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 text-xl shadow-sm">
+                    <i class="fas fa-boxes"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">คลังของรางวัล</span>
+                    <span class="text-[10px] text-gray-400">สต็อกสินค้า</span>
+                </div>
+            </a>
+            <a href="#" class="bg-white p-6 rounded-3xl shadow-sm border border-purple-50 flex flex-col items-center gap-3 text-center">
+                <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 text-xl shadow-sm">
+                    <i class="fas fa-bullhorn"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">จัดการประกาศ</span>
+                    <span class="text-[10px] text-gray-400">ส่งข่าวสารถึงนักเรียน</span>
+                </div>
+            </a>
+            <a href="#" class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-50 flex flex-col items-center gap-3 text-center">
+                <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 text-xl shadow-sm">
+                    <i class="fas fa-users-cog"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">จัดการสมาชิก</span>
+                    <span class="text-[10px] text-gray-400">แก้ไขข้อมูลนักเรียน</span>
+                </div>
+            </a>
+        </div>
+    </div>
 
-        const tableBody = document.getElementById('studentTableBody');
-        const searchInput = document.getElementById('studentSearch');
-        const prevBtn = document.getElementById('prevPage');
-        const nextBtn = document.getElementById('nextPage');
-        const paginationInfo = document.getElementById('paginationInfo');
-
-        function renderTable() {
-            const start = (currentPage - 1) * rowsPerPage;
-            const end = start + rowsPerPage;
-            const paginatedItems = filteredStudents.slice(start, end);
-
-            tableBody.innerHTML = paginatedItems.map((s, index) => `
-                <tr class="hover:bg-gray-50 transition-colors">
-                    <td class="px-6 py-4 text-sm text-gray-500">${start + index + 1}</td>
-                    <td class="px-6 py-4 text-sm font-medium text-gray-800">${s.id}</td>
-                    <td class="px-6 py-4 text-sm text-gray-800">${s.name}</td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-2 py-1 bg-yellow-50 text-yellow-700 rounded-md text-xs font-bold">${s.goodPoints}</span>
-                    </td>
-                    <td class="px-6 py-4 text-center">
-                        <span class="px-2 py-1 bg-green-50 text-green-700 rounded-md text-xs font-bold">${s.wasteStamps}</span>
-                    </td>
-                    <td class="px-6 py-4 text-right">
-                        <button onclick="openPointModal('${s.id}')" class="text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 px-3 py-1.5 rounded-lg transition-colors">
-                            <i class="fas fa-edit mr-1"></i> จัดการแต้ม
-                        </button>
-                    </td>
-                </tr>
-            `).join('');
-
-            updatePaginationUI();
-            updateStats();
-        }
-
-        function updatePaginationUI() {
-            const total = filteredStudents.length;
-            const start = total === 0 ? 0 : (currentPage - 1) * rowsPerPage + 1;
-            const end = Math.min(currentPage * rowsPerPage, total);
-            
-            paginationInfo.textContent = `กำลังแสดง ${start} ถึง ${end} จาก ${total} คน`;
-            prevBtn.disabled = currentPage === 1;
-            nextBtn.disabled = end >= total;
-        }
-
-        function updateStats() {
-            document.getElementById('totalStudents').textContent = students.length;
-            document.getElementById('totalGoodPoints').textContent = students.reduce((sum, s) => sum + s.goodPoints, 0).toLocaleString();
-            document.getElementById('totalWasteStamps').textContent = students.reduce((sum, s) => sum + s.wasteStamps, 0).toLocaleString();
-        }
-
-        // Search logic
-        searchInput.addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase();
-            filteredStudents = students.filter(s => 
-                s.name.toLowerCase().includes(term) || 
-                s.id.toLowerCase().includes(term)
-            );
-            currentPage = 1;
-            renderTable();
-        });
-
-        prevBtn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderTable(); } });
-        nextBtn.addEventListener('click', () => { if (currentPage * rowsPerPage < filteredStudents.length) { currentPage++; renderTable(); } });
-
-        // Modal Functions (Expose to window for inline onclick)
-        window.openPointModal = (id) => {
-            const student = students.find(s => s.id === id);
-            if (!student) return;
-            selectedStudentId = id;
-            document.getElementById('modalStudentName').textContent = student.name;
-            document.getElementById('modalStudentId').textContent = `ID: ${student.id}`;
-            document.getElementById('inputGoodPoints').value = student.goodPoints;
-            document.getElementById('inputWasteStamps').value = student.wasteStamps;
-            
-            const modal = document.getElementById('pointModal');
-            modal.classList.remove('hidden');
-            setTimeout(() => document.getElementById('modalContent').classList.remove('scale-95'), 10);
-        };
-
-        window.closeModal = () => {
-            const modal = document.getElementById('pointModal');
-            document.getElementById('modalContent').classList.add('scale-95');
-            setTimeout(() => modal.classList.add('hidden'), 200);
-        };
-
-        window.adjustPoint = (type, val) => {
-            const input = type === 'good' ? document.getElementById('inputGoodPoints') : document.getElementById('inputWasteStamps');
-            input.value = Math.max(0, parseInt(input.value || 0) + val);
-        };
-
-        window.savePoints = () => {
-            const goodVal = parseInt(document.getElementById('inputGoodPoints').value || 0);
-            const wasteVal = parseInt(document.getElementById('inputWasteStamps').value || 0);
-            
-            const idx = students.findIndex(s => s.id === selectedStudentId);
-            if (idx !== -1) {
-                students[idx].goodPoints = goodVal;
-                students[idx].wasteStamps = wasteVal;
-                // Update filtered list too
-                const fIdx = filteredStudents.findIndex(s => s.id === selectedStudentId);
-                if (fIdx !== -1) {
-                    filteredStudents[fIdx].goodPoints = goodVal;
-                    filteredStudents[fIdx].wasteStamps = wasteVal;
-                }
-                renderTable();
-                closeModal();
-                // In a real app, save to Firebase here
-                console.log(`Saved points for ${selectedStudentId}: Good=${goodVal}, Waste=${wasteVal}`);
-            }
-        };
-
-        // Close modal on click outside
-        document.getElementById('pointModal').addEventListener('click', (e) => {
-            if (e.target.id === 'pointModal') closeModal();
-        });
-
-        // Initial Render
-        renderTable();
-    </script>
+    <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 px-6 py-3 flex justify-between items-center z-50 h-20">
+        <a href="index.html" class="nav-item">
+            <i class="fas fa-home"></i>
+            <span>หน้าหลัก</span>
+        </a>
+        <a href="admin-dashboard.html" class="nav-item active">
+            <div class="bg-indigo-50 p-2 rounded-xl mb-1">
+                <i class="fas fa-user-shield"></i>
+            </div>
+            <span>แอดมิน</span>
+        </a>
+        <a href="profile.html" class="nav-item">
+            <i class="fas fa-user-circle"></i>
+            <span>โปรไฟล์</span>
+        </a>
+    </nav>
+    <script src="js/theme.js"></script>
 </body>
 </html>

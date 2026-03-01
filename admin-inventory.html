@@ -3,165 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการคลังของขวัญ - S.T. ก้าวหน้า</title>
+    <title>S.T. ก้าวหน้า - คลังของรางวัล</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex">
-        <main class="flex-1 p-4 md:p-8">
-            <header class="mb-8 flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">จัดการคลังของขวัญ</h1>
-                    <p class="text-sm text-gray-500">จัดการไอเทมสำหรับแลกแต้มธนาคารขยะ</p>
-                </div>
-                <div class="flex gap-3">
-                    <button onclick="openAddModal()" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold text-sm shadow-lg shadow-blue-100 flex items-center gap-2">
-                        <i class="fas fa-plus"></i> เพิ่มของรางวัล
-                    </button>
-                    <a href="admin-dashboard.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm flex items-center">
-                        <i class="fas fa-arrow-left mr-1"></i> กลับแผงควบคุม
-                    </a>
-                </div>
-            </header>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6" id="inventoryGrid">
-                <div class="col-span-full flex justify-center py-12">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
+<body class="min-h-screen bg-gray-50 flex flex-col pb-6">
+    <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-[2.5rem] shadow-lg">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="text-white/80"><i class="fas fa-chevron-left text-xl"></i></a>
+            <div>
+                <h1 class="text-xl font-bold">คลังของรางวัล</h1>
+                <p class="text-indigo-100 text-xs">จัดการสต็อกสินค้าแลกแต้ม</p>
             </div>
-        </main>
-    </div>
-
-    <!-- Add/Edit Modal -->
-    <div id="rewardModal" class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4 hidden">
-        <div class="bg-white w-full max-w-md rounded-3xl p-8">
-            <h2 id="modalTitle" class="text-xl font-bold mb-6">เพิ่มของรางวัลใหม่</h2>
-            <form id="rewardForm" class="space-y-4">
-                <input type="hidden" id="rewardId">
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">ชื่อของรางวัล</label>
-                    <input type="text" id="rewardName" required class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">แต้มที่ต้องใช้</label>
-                    <input type="number" id="rewardPoints" required class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">จำนวนสต็อก</label>
-                    <input type="number" id="rewardStock" required class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-gray-400 mb-1 uppercase">รูปภาพของรางวัล</label>
-                    <input type="file" id="rewardImage" accept="image/*" class="w-full p-3 bg-gray-50 border border-gray-100 rounded-xl outline-none focus:border-blue-500 transition-colors">
-                </div>
-                <div class="mt-8 flex gap-3">
-                    <button type="button" onclick="closeModal()" class="flex-1 py-3 bg-gray-100 text-gray-600 rounded-2xl font-bold">ยกเลิก</button>
-                    <button type="submit" id="saveBtn" class="flex-1 py-3 bg-blue-600 text-white rounded-2xl font-bold shadow-lg shadow-blue-100">บันทึก</button>
-                </div>
-            </form>
         </div>
     </div>
 
-    <script type="module">
-        import { getRewards, addReward, updateReward, deleteReward } from './js/data.js';
-
-        const inventoryGrid = document.getElementById('inventoryGrid');
-        const modal = document.getElementById('rewardModal');
-        const form = document.getElementById('rewardForm');
-        let currentRewards = [];
-
-        async function loadInventory() {
-            currentRewards = await getRewards();
-            
-            if (currentRewards.length === 0) {
-                inventoryGrid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">ยังไม่มีของรางวัลในคลัง</div>';
-                return;
-            }
-
-            inventoryGrid.innerHTML = currentRewards.map(item => `
-                <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100">
-                    <div class="aspect-square bg-gray-50 rounded-2xl mb-4 overflow-hidden">
-                        <img src="${item.imageUrl || 'https://via.placeholder.com/200?text=No+Image'}" class="w-full h-full object-contain p-2" alt="${item.name}">
-                    </div>
-                    <h3 class="font-bold text-gray-800 mb-1">${item.name}</h3>
-                    <div class="flex justify-between items-center mb-4">
-                        <span class="text-xs text-blue-600 font-bold">ใช้ ${item.points} แสตมป์</span>
-                        <span class="text-xs text-gray-400">คงเหลือ: ${item.stock}</span>
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="window.editReward('${item.id}')" class="flex-1 py-2 bg-gray-100 text-gray-600 rounded-xl text-xs font-bold hover:bg-gray-200">แก้ไข</button>
-                        <button onclick="window.handleDelete('${item.id}')" class="py-2 px-3 bg-red-50 text-red-500 rounded-xl text-xs hover:bg-red-100"><i class="fas fa-trash"></i></button>
-                    </div>
+    <div class="p-6 grid grid-cols-1 gap-4">
+        <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2405/2405479.png" class="w-8 h-8 object-contain" alt="Drink">
                 </div>
-            `).join('');
-        }
+                <div>
+                    <h3 class="font-bold text-gray-800 text-sm">น้ำดื่ม 1 ขวด</h3>
+                    <p class="text-[10px] text-gray-400">คงเหลือ: 45 ขวด</p>
+                </div>
+            </div>
+            <button class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-plus text-xs"></i>
+            </button>
+        </div>
 
-        window.openAddModal = () => {
-            document.getElementById('modalTitle').textContent = 'เพิ่มของรางวัลใหม่';
-            document.getElementById('rewardId').value = '';
-            form.reset();
-            modal.classList.remove('hidden');
-        };
+        <div class="bg-white p-4 rounded-3xl shadow-sm border border-gray-100 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center">
+                    <img src="https://cdn-icons-png.flaticon.com/512/2904/2904831.png" class="w-8 h-8 object-contain" alt="Notebook">
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 text-sm">สมุดโน้ต 1 เล่ม</h3>
+                    <p class="text-[10px] text-gray-400">คงเหลือ: 12 เล่ม</p>
+                </div>
+            </div>
+            <button class="w-8 h-8 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center">
+                <i class="fas fa-plus text-xs"></i>
+            </button>
+        </div>
 
-        window.closeModal = () => {
-            modal.classList.add('hidden');
-        };
-
-        window.editReward = (id) => {
-            const item = currentRewards.find(r => r.id === id);
-            if (!item) return;
-
-            document.getElementById('modalTitle').textContent = 'แก้ไขของรางวัล';
-            document.getElementById('rewardId').value = item.id;
-            document.getElementById('rewardName').value = item.name;
-            document.getElementById('rewardPoints').value = item.points;
-            document.getElementById('rewardStock').value = item.stock;
-            modal.classList.remove('hidden');
-        };
-
-        window.handleDelete = async (id) => {
-            if (confirm('ยืนยันการลบของรางวัลนี้?')) {
-                const result = await deleteReward(id);
-                if (result.success) loadInventory();
-            }
-        };
-
-        form.onsubmit = async (e) => {
-            e.preventDefault();
-            const saveBtn = document.getElementById('saveBtn');
-            saveBtn.disabled = true;
-            saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
-
-            const id = document.getElementById('rewardId').value;
-            const data = {
-                name: document.getElementById('rewardName').value,
-                points: parseInt(document.getElementById('rewardPoints').value),
-                stock: parseInt(document.getElementById('rewardStock').value)
-            };
-            const imageFile = document.getElementById('rewardImage').files[0];
-
-            let result;
-            if (id) {
-                result = await updateReward(id, data);
-            } else {
-                result = await addReward(data, imageFile);
-            }
-
-            if (result.success) {
-                closeModal();
-                loadInventory();
-            } else {
-                alert('เกิดข้อผิดพลาดในการบันทึก');
-            }
-            
-            saveBtn.disabled = false;
-            saveBtn.textContent = 'บันทึก';
-        };
-
-        loadInventory();
-    </script>
+        <button class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-bold shadow-lg shadow-indigo-100 mt-4">
+            <i class="fas fa-plus-circle mr-2"></i>เพิ่มของรางวัลใหม่
+        </button>
+    </div>
+    <script src="js/theme.js"></script>
 </body>
 </html>

@@ -91,7 +91,7 @@
                 <label class="text-xs font-medium text-gray-700 ml-1">รหัสสำหรับสภานักเรียน (ถ้ามี)</label>
                 <div class="input-group">
                     <i class="fas fa-shield-alt text-sm"></i>
-                    <input type="text" class="input-field text-sm p-3 pl-12" placeholder="เว้นว่างได้">
+                    <input type="text" id="adminCode" class="input-field text-sm p-3 pl-12" placeholder="เว้นว่างได้">
                 </div>
             </div>
 
@@ -100,5 +100,20 @@
             </button>
         </form>
     </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const adminCode = document.getElementById('adminCode').value;
+            if (adminCode === 'Admin256923') {
+                localStorage.setItem('userRole', 'admin');
+            } else {
+                localStorage.setItem('userRole', 'student');
+            }
+            // Simple simulation of registration
+            localStorage.setItem('isLoggedIn', 'true');
+            window.location.href = 'index.html';
+        });
+    </script>
 </body>
 </html>

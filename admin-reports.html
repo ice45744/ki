@@ -3,86 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>จัดการแจ้งปัญหา - S.T. ก้าวหน้า</title>
+    <title>S.T. ก้าวหน้า - รายการแจ้งเหตุ</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <div class="flex">
-        <main class="flex-1 p-4 md:p-8">
-            <header class="mb-8 flex justify-between items-center">
-                <div>
-                    <h1 class="text-2xl font-bold text-gray-800">จัดการแจ้งปัญหา</h1>
-                    <p class="text-sm text-gray-500">ติดตามและอัปเดตสถานะการแก้ไขปัญหา</p>
-                </div>
-                <a href="admin-dashboard.html" class="text-blue-600 hover:text-blue-700 font-medium text-sm">
-                    <i class="fas fa-arrow-left mr-1"></i> กลับแผงควบคุม
-                </a>
-            </header>
-
-            <div class="grid grid-cols-1 gap-6" id="reportsList">
-                <div class="flex justify-center py-12">
-                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                </div>
+<body class="min-h-screen bg-gray-50 flex flex-col pb-6">
+    <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-[2.5rem] shadow-lg">
+        <div class="flex items-center gap-4">
+            <a href="admin-dashboard.html" class="text-white/80"><i class="fas fa-chevron-left text-xl"></i></a>
+            <div>
+                <h1 class="text-xl font-bold">รายการแจ้งเหตุ</h1>
+                <p class="text-indigo-100 text-xs">จัดการข้อร้องเรียนจากนักเรียน</p>
             </div>
-        </main>
+        </div>
     </div>
 
-    <script type="module">
-        import { getReports, updateReportStatus } from './js/data.js';
+    <div class="p-6 space-y-4">
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
+            <div class="flex justify-between items-start mb-3">
+                <span class="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-[10px] font-bold">รอดำเนินการ</span>
+                <span class="text-[10px] text-gray-400">28 ก.พ. 2569</span>
+            </div>
+            <h3 class="font-bold text-gray-800 text-sm mb-1">ห้องน้ำอาคาร 3 สกปรก</h3>
+            <p class="text-xs text-gray-500 mb-4">อยากให้ช่วยประสานงานแม่บ้านให้ทำความสะอาดบ่อยขึ้นครับ</p>
+            <div class="flex gap-2">
+                <button class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">รับเรื่อง</button>
+                <button class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-xs font-bold">รายละเอียด</button>
+            </div>
+        </div>
 
-        async function loadReports() {
-            const reportsList = document.getElementById('reportsList');
-            const reports = await getReports();
-            
-            if (reports.length === 0) {
-                reportsList.innerHTML = '<div class="text-center py-12 text-gray-500">ยังไม่มีการแจ้งปัญหา</div>';
-                return;
-            }
-
-            reportsList.innerHTML = reports.map(report => `
-                <div class="bg-white p-6 rounded-3xl shadow-sm border border-gray-100 flex flex-col md:flex-row gap-6">
-                    <div class="w-full md:w-48 h-48 bg-gray-100 rounded-2xl overflow-hidden flex-shrink-0">
-                        <img src="${report.imageUrl || 'https://via.placeholder.com/400?text=No+Image'}" class="w-full h-full object-cover" alt="Issue">
-                    </div>
-                    <div class="flex-1">
-                        <div class="flex justify-between items-start mb-2">
-                            <span class="px-3 py-1 ${report.category === 'emergency' ? 'bg-red-100 text-red-600' : 'bg-orange-100 text-orange-600'} rounded-full text-[10px] font-bold uppercase">${report.category || 'ทั่วไป'}</span>
-                            <span class="text-xs text-gray-400">${new Date(report.createdAt).toLocaleDateString('th-TH')}</span>
-                        </div>
-                        <h3 class="text-lg font-bold text-gray-800 mb-2">${report.title}</h3>
-                        <p class="text-sm text-gray-600 mb-4 leading-relaxed">${report.description}</p>
-                        
-                        <div class="flex items-center justify-between pt-4 border-t border-gray-50">
-                            <div class="flex items-center gap-2">
-                                <span class="w-2 h-2 rounded-full ${report.status === 'fixed' ? 'bg-green-500' : 'bg-yellow-500'}"></span>
-                                <span class="text-xs font-medium text-gray-500">${report.status === 'fixed' ? 'แก้ไขแล้ว' : 'รอดำเนินการ'}</span>
-                            </div>
-                            ${report.status !== 'fixed' ? `
-                                <button onclick="window.handleUpdateStatus('${report.id}')" class="px-4 py-2 bg-green-600 text-white rounded-xl text-xs font-bold hover:bg-green-700 transition-colors">
-                                    ทำเครื่องหมายว่าแก้ไขแล้ว
-                                </button>
-                            ` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        window.handleUpdateStatus = async (id) => {
-            if (confirm('ยืนยันการอัปเดตสถานะเป็น "แก้ไขแล้ว"?')) {
-                const result = await updateReportStatus(id, 'fixed');
-                if (result.success) {
-                    loadReports();
-                } else {
-                    alert('เกิดข้อผิดพลาดในการอัปเดต');
-                }
-            }
-        };
-
-        loadReports();
-    </script>
+        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 opacity-60">
+            <div class="flex justify-between items-start mb-3">
+                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded text-[10px] font-bold">เสร็จสิ้น</span>
+                <span class="text-[10px] text-gray-400">25 ก.พ. 2569</span>
+            </div>
+            <h3 class="font-bold text-gray-800 text-sm mb-1">ก๊อกน้ำอ่างล้างหน้าชำรุด</h3>
+            <p class="text-xs text-gray-500 mb-4">ซ่อมแซมเรียบร้อยแล้วโดยช่างประจำโรงเรียน</p>
+        </div>
+    </div>
+    <script src="js/theme.js"></script>
 </body>
 </html>

@@ -47,7 +47,7 @@
                             <hr class="border-gray-100 dark:border-slate-700">
                             <p class="text-[10px] text-gray-400 uppercase font-bold px-1">ทางลัดด่วน</p>
                             <div id="quickShortcuts" class="grid grid-cols-1 gap-2">
-                                <a href="admin-dashboard.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
+                                <a href="admin-dashboard.html" id="adminLink" class="hidden items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
                                     <i class="fas fa-user-shield text-indigo-500 w-4"></i>
                                     แดชบอร์ดแอดมิน (Admin)
                                 </a>
@@ -71,6 +71,24 @@
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="px-6 -mt-8 grid grid-cols-2 gap-3 relative z-10">
+            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border border-yellow-50">
+                <div class="w-7 h-7 bg-yellow-50 rounded-full flex items-center justify-center mx-auto mb-1.5">
+                    <i class="fas fa-award text-yellow-500 text-sm"></i>
+                </div>
+                <div class="text-lg font-bold dark:text-white">0</div>
+                <div class="text-gray-400 dark:text-slate-400 text-[9px] mt-0.5">แต้มความดี</div>
+            </div>
+            <div class="bg-white p-4 rounded-2xl shadow-sm text-center border border-green-50">
+                <div class="w-7 h-7 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-1.5">
+                    <i class="fas fa-recycle text-green-500 text-sm"></i>
+                </div>
+                <div class="text-lg font-bold dark:text-white">0</div>
+                <div class="text-gray-400 dark:text-slate-400 text-[9px] mt-0.5">แสตมป์ขยะ</div>
             </div>
         </div>
 
@@ -208,6 +226,16 @@
                 document.getElementById('popupOverlay').classList.add('hidden');
             }, 200);
         };
+
+        // Admin check
+        window.addEventListener('load', () => {
+            const userRole = localStorage.getItem('userRole');
+            const adminLink = document.getElementById('adminLink');
+            if (userRole === 'admin' && adminLink) {
+                adminLink.classList.remove('hidden');
+                adminLink.classList.add('flex');
+            }
+        });
     </script>
 </body>
 </html>
