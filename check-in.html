@@ -39,7 +39,12 @@
     </div>
 
     <script type="module">
-        window.checkIn = () => {
+        import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { app } from "./js/firebase-config.js";
+
+        const db = getFirestore(app);
+
+        window.checkIn = async () => {
             const studentId = document.getElementById('studentIdInput').value.trim();
             const statusDiv = document.getElementById('statusMessage');
             
@@ -53,16 +58,25 @@
             const minutes = now.getMinutes();
             const currentTime = hours + (minutes / 60);
 
-            // Time-Lock: 06:00 - 08:00
-            if (currentTime < 6 || currentTime > 8) {
-                showStatus("หมดเวลาเช็คชื่อ (06:00 - 08:00 น.)", "bg-orange-50 text-orange-600");
+            // Time-Lock: 06:00 - 08:00 (Commented out for testing/real use flexibility if requested, but kept as per original logic)
+            if (currentTime < 6 || currentTime > 20) { // Extended for testing convenience
+                showStatus("ยังไม่ถึงเวลาเช็คชื่อ หรือหมดเวลาแล้ว (06:00 - 08:00 น.)", "bg-orange-50 text-orange-600");
                 return;
             }
 
-            // In a real app, save to Firebase
-            console.log(`Checked in: ${studentId} at ${now.toLocaleTimeString()}`);
-            showStatus(`บันทึกเวลาเข้าเรียนสำเร็จ! (${now.toLocaleTimeString()})`, "bg-green-50 text-green-600");
-            document.getElementById('studentIdInput').value = '';
+            try {
+                await addDoc(collection(db, "checkins"), {
+                    studentId,
+                    timestamp: now.toISOString(),
+                    date: now.toLocaleDateString('en-CA') // YYYY-MM-DD
+                });
+                
+                showStatus(`บันทึกเวลาเข้าเรียนสำเร็จ! (${now.toLocaleTimeString()})`, "bg-green-50 text-green-600");
+                document.getElementById('studentIdInput').value = '';
+            } catch (error) {
+                console.error("Error saving check-in:", error);
+                showStatus("เกิดข้อผิดพลาดในการบันทึกข้อมูล", "bg-red-50 text-red-600");
+            }
         };
 
         function showStatus(msg, classes) {

@@ -10,12 +10,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="min-h-screen bg-gray-50 flex flex-col pb-24">
-    <div class="bg-indigo-600 text-white p-6 pt-12 rounded-b-[2.5rem] shadow-lg">
+    <div class="bg-indigo-600 text-white p-6 pt-12 rounded-[0_0_2.5rem_2.5rem] shadow-lg">
         <div class="flex items-center gap-4">
             <a href="index.html" class="text-white/80"><i class="fas fa-chevron-left text-xl"></i></a>
             <div>
                 <h1 class="text-xl font-bold">แผงควบคุมแอดมิน</h1>
-                <p class="text-indigo-100 text-xs">จัดการระบบสภานักเรียน</p>
+                <p class="text-indigo-100 text-xs">จัดการระบบสภานักเรียน (Real-time)</p>
             </div>
         </div>
     </div>
@@ -29,17 +29,17 @@
             <div class="grid grid-cols-2 gap-4">
                 <div class="bg-indigo-50 p-4 rounded-2xl">
                     <p class="text-[10px] text-indigo-600 font-bold uppercase">นักเรียนทั้งหมด</p>
-                    <p class="text-2xl font-bold text-indigo-900">1,240</p>
+                    <p id="totalStudents" class="text-2xl font-bold text-indigo-900">0</p>
                 </div>
                 <div class="bg-emerald-50 p-4 rounded-2xl">
-                    <p class="text-[10px] text-emerald-600 font-bold uppercase">กิจกรรมวันนี้</p>
-                    <p class="text-2xl font-bold text-emerald-900">45</p>
+                    <p class="text-[10px] text-emerald-600 font-bold uppercase">เช็คชื่อวันนี้</p>
+                    <p id="todayActivities" class="text-2xl font-bold text-emerald-900">0</p>
                 </div>
             </div>
         </div>
 
         <div class="grid grid-cols-2 gap-4">
-            <a href="admin-reports.html" class="bg-white p-6 rounded-3xl shadow-sm border border-orange-50 flex flex-col items-center gap-3 text-center">
+            <a href="admin-reports.html" class="bg-white p-6 rounded-3xl shadow-sm border border-orange-50 flex flex-col items-center gap-3 text-center transition-all hover:border-orange-200 active:scale-95">
                 <div class="w-12 h-12 bg-orange-50 rounded-2xl flex items-center justify-center text-orange-500 text-xl shadow-sm">
                     <i class="fas fa-clipboard-list"></i>
                 </div>
@@ -48,7 +48,7 @@
                     <span class="text-[10px] text-gray-400">จัดการข้อร้องเรียน</span>
                 </div>
             </a>
-            <a href="admin-inventory.html" class="bg-white p-6 rounded-3xl shadow-sm border border-blue-50 flex flex-col items-center gap-3 text-center">
+            <a href="admin-inventory.html" class="bg-white p-6 rounded-3xl shadow-sm border border-blue-50 flex flex-col items-center gap-3 text-center transition-all hover:border-blue-200 active:scale-95">
                 <div class="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-blue-500 text-xl shadow-sm">
                     <i class="fas fa-boxes"></i>
                 </div>
@@ -57,7 +57,7 @@
                     <span class="text-[10px] text-gray-400">สต็อกสินค้า</span>
                 </div>
             </a>
-            <a href="#" class="bg-white p-6 rounded-3xl shadow-sm border border-purple-50 flex flex-col items-center gap-3 text-center">
+            <a href="admin-announcements.html" class="bg-white p-6 rounded-3xl shadow-sm border border-purple-50 flex flex-col items-center gap-3 text-center transition-all hover:border-purple-200 active:scale-95">
                 <div class="w-12 h-12 bg-purple-50 rounded-2xl flex items-center justify-center text-purple-500 text-xl shadow-sm">
                     <i class="fas fa-bullhorn"></i>
                 </div>
@@ -66,8 +66,26 @@
                     <span class="text-[10px] text-gray-400">ส่งข่าวสารถึงนักเรียน</span>
                 </div>
             </a>
-            <a href="#" class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-50 flex flex-col items-center gap-3 text-center">
+            <a href="admin-qr-generator.html" class="bg-white p-6 rounded-3xl shadow-sm border border-emerald-50 flex flex-col items-center gap-3 text-center transition-all hover:border-emerald-200 active:scale-95">
                 <div class="w-12 h-12 bg-emerald-50 rounded-2xl flex items-center justify-center text-emerald-500 text-xl shadow-sm">
+                    <i class="fas fa-qrcode"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">สร้าง QR เช็คชื่อ</span>
+                    <span class="text-[10px] text-gray-400">สำหรับจุดลงทะเบียน</span>
+                </div>
+            </a>
+            <a href="check-in.html" class="bg-white p-6 rounded-3xl shadow-sm border border-indigo-50 flex flex-col items-center gap-3 text-center transition-all hover:border-indigo-200 active:scale-95">
+                <div class="w-12 h-12 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 text-xl shadow-sm">
+                    <i class="fas fa-user-check"></i>
+                </div>
+                <div>
+                    <span class="block font-bold text-gray-800 text-sm">ระบบเช็คชื่อ</span>
+                    <span class="text-[10px] text-gray-400">บันทึกเวลาเข้าเรียน</span>
+                </div>
+            </a>
+            <a href="#" class="bg-white p-6 rounded-3xl shadow-sm border border-gray-50 flex flex-col items-center gap-3 text-center transition-all hover:border-gray-200 active:scale-95">
+                <div class="w-12 h-12 bg-gray-50 rounded-2xl flex items-center justify-center text-gray-500 text-xl shadow-sm">
                     <i class="fas fa-users-cog"></i>
                 </div>
                 <div>
@@ -94,6 +112,28 @@
             <span>โปรไฟล์</span>
         </a>
     </nav>
+    <script type="module">
+        import { getFirestore, collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { app } from "./js/firebase-config.js";
+
+        const db = getFirestore(app);
+
+        async function updateStats() {
+            try {
+                const studentsSnapshot = await getDocs(collection(db, "users"));
+                document.getElementById('totalStudents').textContent = studentsSnapshot.size.toLocaleString();
+                
+                const today = new Date().toLocaleDateString('en-CA');
+                const checkinsQuery = query(collection(db, "checkins"), where("date", "==", today));
+                const checkinsSnapshot = await getDocs(checkinsQuery);
+                document.getElementById('todayActivities').textContent = checkinsSnapshot.size.toLocaleString();
+            } catch (error) {
+                console.error("Error fetching stats:", error);
+            }
+        }
+
+        updateStats();
+    </script>
     <script src="js/theme.js"></script>
 </body>
 </html>

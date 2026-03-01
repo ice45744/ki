@@ -1,11 +1,26 @@
 // Authentication management
-import firebaseConfig from './firebase-config.js';
+import { getAuth, signInWithEmailAndPassword, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { app } from './firebase-config.js';
 
-// Placeholder for auth logic
-export const login = (studentId, password) => {
-    console.log('Logging in...', studentId);
+const auth = getAuth(app);
+
+export const login = async (email, password) => {
+    try {
+        const userCredential = await signInWithEmailAndPassword(auth, email, password);
+        localStorage.setItem('isLoggedIn', 'true');
+        return { success: true, user: userCredential.user };
+    } catch (error) {
+        console.error("Login error:", error);
+        return { success: false, error };
+    }
 };
 
-export const logout = () => {
-    console.log('Logging out...');
+export const logout = async () => {
+    try {
+        await signOut(auth);
+        localStorage.clear();
+        window.location.href = 'login.html';
+    } catch (error) {
+        console.error("Logout error:", error);
+    }
 };

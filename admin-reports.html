@@ -20,29 +20,55 @@
         </div>
     </div>
 
-    <div class="p-6 space-y-4">
-        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100">
-            <div class="flex justify-between items-start mb-3">
-                <span class="px-2 py-0.5 bg-orange-100 text-orange-600 rounded text-[10px] font-bold">รอดำเนินการ</span>
-                <span class="text-[10px] text-gray-400">28 ก.พ. 2569</span>
-            </div>
-            <h3 class="font-bold text-gray-800 text-sm mb-1">ห้องน้ำอาคาร 3 สกปรก</h3>
-            <p class="text-xs text-gray-500 mb-4">อยากให้ช่วยประสานงานแม่บ้านให้ทำความสะอาดบ่อยขึ้นครับ</p>
-            <div class="flex gap-2">
-                <button class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">รับเรื่อง</button>
-                <button class="flex-1 bg-gray-100 text-gray-600 py-2 rounded-xl text-xs font-bold">รายละเอียด</button>
-            </div>
-        </div>
-
-        <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 opacity-60">
-            <div class="flex justify-between items-start mb-3">
-                <span class="px-2 py-0.5 bg-emerald-100 text-emerald-600 rounded text-[10px] font-bold">เสร็จสิ้น</span>
-                <span class="text-[10px] text-gray-400">25 ก.พ. 2569</span>
-            </div>
-            <h3 class="font-bold text-gray-800 text-sm mb-1">ก๊อกน้ำอ่างล้างหน้าชำรุด</h3>
-            <p class="text-xs text-gray-500 mb-4">ซ่อมแซมเรียบร้อยแล้วโดยช่างประจำโรงเรียน</p>
+    <div id="reportsList" class="p-6 space-y-4">
+        <div class="text-center py-12">
+            <i class="fas fa-spinner fa-spin text-indigo-500 text-3xl mb-4"></i>
+            <p class="text-gray-500">กำลังโหลดข้อมูล...</p>
         </div>
     </div>
+    <script type="module">
+        import { getReports, updateReportStatus } from './js/data.js';
+        
+        const reportsList = document.getElementById('reportsList');
+
+        async function loadReports() {
+            const reports = await getReports();
+            if (reports.length === 0) {
+                reportsList.innerHTML = `
+                    <div class="bg-white p-8 rounded-3xl shadow-sm border border-gray-100 text-center">
+                        <i class="fas fa-clipboard-check text-gray-200 text-5xl mb-4"></i>
+                        <p class="text-gray-400">ไม่มีรายการแจ้งเหตุในขณะนี้</p>
+                    </div>`;
+                return;
+            }
+
+            reportsList.innerHTML = reports.map(report => `
+                <div class="bg-white p-5 rounded-3xl shadow-sm border border-gray-100 ${report.status === 'fixed' ? 'opacity-60' : ''}">
+                    <div class="flex justify-between items-start mb-3">
+                        <span class="px-2 py-0.5 ${report.status === 'pending' ? 'bg-orange-100 text-orange-600' : 'bg-emerald-100 text-emerald-600'} rounded text-[10px] font-bold">
+                            ${report.status === 'pending' ? 'รอดำเนินการ' : 'เสร็จสิ้น'}
+                        </span>
+                        <span class="text-[10px] text-gray-400">${new Date(report.createdAt).toLocaleDateString('th-TH')}</span>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-sm mb-1">${report.title}</h3>
+                    <p class="text-xs text-gray-500 mb-4">${report.description}</p>
+                    ${report.status === 'pending' ? `
+                    <div class="flex gap-2">
+                        <button onclick="updateStatus('${report.id}', 'fixed')" class="flex-1 bg-indigo-600 text-white py-2 rounded-xl text-xs font-bold">รับเรื่อง/แก้ไขแล้ว</button>
+                    </div>` : ''}
+                </div>
+            `).join('');
+        }
+
+        window.updateStatus = async (id, status) => {
+            if(confirm('ยืนยันการเปลี่ยนสถานะ?')) {
+                await updateReportStatus(id, status);
+                loadReports();
+            }
+        };
+
+        loadReports();
+    </script>
     <script src="js/theme.js"></script>
 </body>
 </html>

@@ -64,7 +64,7 @@ export const updateReportStatus = async (reportId, status) => {
 // Gift Inventory System
 export const addReward = async (rewardData, imageFile) => {
     try {
-        let imageUrl = "";
+        let imageUrl = rewardData.imageUrl || "";
         if (imageFile) {
             const storageRef = ref(storage, `rewards/${Date.now()}_${imageFile.name}`);
             const snapshot = await uploadBytes(storageRef, imageFile);
