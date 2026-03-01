@@ -22,53 +22,60 @@
     <!-- Main Content -->
     <main class="flex-grow pb-24">
         <!-- Header Section -->
-        <div class="bg-blue-600 text-white pt-6 pb-14 px-6 rounded-b-[2.5rem] relative z-20">
-            <div class="flex justify-between items-start">
-                <div>
-                    <p class="text-blue-100 text-[9px] font-light">ยินดีต้อนรับกลับมา</p>
-                    <h1 class="text-base font-bold mt-0.5 tracking-tight" id="userName">Kittipot Ice</h1>
-                    <p class="text-blue-200 text-[8px] mt-0.5 font-medium">รหัสนักเรียน: 19823</p>
-                </div>
-                <div class="relative">
-                    <button id="profileBtn" class="w-8 h-8 bg-blue-400 rounded-full flex items-center justify-center text-sm font-bold border-2 border-blue-300 overflow-hidden focus:outline-none relative z-[10000] shadow-sm">
-                        K
-                    </button>
-                    <!-- Profile Dropdown -->
-                    <div id="profileDropdown" class="profile-dropdown p-4 border border-gray-100 dark:border-slate-700">
-                        <div class="space-y-3">
-                            <a href="profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
-                                <i class="fas fa-user-circle text-blue-500"></i>
-                                โปรไฟล์
-                            </a>
-                            <a href="edit-profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
-                                <i class="fas fa-user-edit text-blue-500"></i>
-                                แก้ไขข้อมูล
-                            </a>
-                            <hr class="border-gray-100 dark:border-slate-700">
-                            <p class="text-[10px] text-gray-400 uppercase font-bold px-1">ทางลัดด่วน</p>
-                            <div id="quickShortcuts" class="grid grid-cols-1 gap-2">
-                                <a href="admin-dashboard.html" id="adminLink" class="hidden items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
-                                    <i class="fas fa-user-shield text-indigo-500 w-4"></i>
-                                    แดชบอร์ดแอดมิน (Admin)
+        <div class="bg-blue-600 text-white pt-10 pb-10 px-6 rounded-b-[2rem] relative z-20 shadow-blue-900/20 shadow-xl">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <div class="relative">
+                        <button id="profileBtn" class="w-12 h-12 bg-blue-400 rounded-full flex items-center justify-center text-lg font-bold border-2 border-blue-300 overflow-hidden focus:outline-none relative z-[10000] shadow-sm transition-transform active:scale-95">
+                            K
+                        </button>
+                        <!-- Profile Dropdown -->
+                        <div id="profileDropdown" class="profile-dropdown p-4 border border-gray-100 dark:border-slate-700">
+                            <div class="space-y-3">
+                                <a href="profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
+                                    <i class="fas fa-user-circle text-blue-500"></i>
+                                    โปรไฟล์
                                 </a>
-                                <a href="points.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
-                                    <i class="fas fa-star text-yellow-500 w-4"></i>
-                                    สะสมแต้มความดี
+                                <a href="edit-profile.html" class="flex items-center gap-3 text-sm font-medium hover:text-blue-500 transition-colors text-gray-800">
+                                    <i class="fas fa-user-edit text-blue-500"></i>
+                                    แก้ไขข้อมูล
                                 </a>
-                                <a href="report.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
-                                    <i class="fas fa-bullhorn text-orange-500 w-4"></i>
-                                    แจ้งเรื่องร้องเรียน
-                                </a>
+                                <hr class="border-gray-100 dark:border-slate-700">
+                                <p class="text-[10px] text-gray-400 uppercase font-bold px-1">ทางลัดด่วน</p>
+                                <div id="quickShortcuts" class="grid grid-cols-1 gap-2">
+                                    <a href="admin-dashboard.html" id="adminLink" class="hidden items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
+                                        <i class="fas fa-user-shield text-indigo-500 w-4"></i>
+                                        แดชบอร์ดแอดมิน (Admin)
+                                    </a>
+                                    <a href="points.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
+                                        <i class="fas fa-star text-yellow-500 w-4"></i>
+                                        สะสมแต้มความดี
+                                    </a>
+                                    <a href="report.html" class="flex items-center gap-3 text-xs hover:text-blue-500 text-gray-600">
+                                        <i class="fas fa-bullhorn text-orange-500 w-4"></i>
+                                        แจ้งเรื่องร้องเรียน
+                                    </a>
+                                </div>
+                                <hr class="border-gray-100 dark:border-slate-700">
+                                <button id="darkModeToggle" class="w-full flex items-center justify-between text-xs font-medium py-1 text-gray-600">
+                                    <span>โหมดมืด (Dark Mode)</span>
+                                    <i class="fas fa-moon text-blue-500"></i>
+                                </button>
+                                <button class="w-full text-left text-xs font-medium text-red-500 mt-2 py-1" onclick="localStorage.clear(); window.location.href='login.html'">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>ออกจากระบบ
+                                </button>
                             </div>
-                            <hr class="border-gray-100 dark:border-slate-700">
-                            <button id="darkModeToggle" class="w-full flex items-center justify-between text-xs font-medium py-1 text-gray-600">
-                                <span>โหมดมืด (Dark Mode)</span>
-                                <i class="fas fa-moon text-blue-500"></i>
-                            </button>
-                            <button class="w-full text-left text-xs font-medium text-red-500 mt-2 py-1" onclick="localStorage.clear(); window.location.href='login.html'">
-                                <i class="fas fa-sign-out-alt mr-2"></i>ออกจากระบบ
-                            </button>
                         </div>
+                    </div>
+                    <div>
+                        <p class="text-blue-100 text-[10px] font-light opacity-80">ยินดีต้อนรับกลับมา</p>
+                        <h1 class="text-lg font-bold leading-tight tracking-tight" id="userName">Kittipot Ice</h1>
+                        <p class="text-blue-200 text-[10px] font-medium opacity-90">รหัสนักเรียน: 19823</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-blue-500/30 rounded-xl flex items-center justify-center backdrop-blur-sm border border-white/10">
+                        <i class="fas fa-bell text-sm text-blue-100"></i>
                     </div>
                 </div>
             </div>
