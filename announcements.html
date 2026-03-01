@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="min-h-screen flex flex-col pb-24">
+<body class="min-h-screen flex flex-col pb-24 bg-[#f8faff]">
     <div class="p-6 pt-12">
         <h1 class="text-xl font-bold flex items-center gap-3">
             <span class="w-8 h-8 bg-orange-50 rounded-xl flex items-center justify-center text-orange-500">
@@ -19,12 +19,9 @@
         </h1>
     </div>
 
-    <div class="flex-grow flex items-center justify-center p-12">
-        <div class="text-center">
-            <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
-                <i class="fas fa-folder-open text-gray-200 text-2xl"></i>
-            </div>
-            <p class="text-gray-400 text-xs">ยังไม่มีประกาศในขณะนี้</p>
+    <div id="announcementList" class="px-6 space-y-4">
+        <div class="flex justify-center py-12">
+            <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-orange-500"></div>
         </div>
     </div>
 
@@ -51,6 +48,45 @@
             <span>โปรไฟล์</span>
         </a>
     </nav>
+
+    <script type="module">
+        import { getAnnouncements } from './js/data.js';
+
+        async function renderAnnouncements() {
+            const container = document.getElementById('announcementList');
+            const data = await getAnnouncements(20);
+            
+            if (data.length === 0) {
+                container.innerHTML = `
+                    <div class="flex flex-col items-center justify-center py-12">
+                        <div class="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-folder-open text-gray-200 text-2xl"></i>
+                        </div>
+                        <p class="text-gray-400 text-xs text-center">ยังไม่มีประกาศในขณะนี้</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = data.map(a => `
+                <div class="bg-white p-5 rounded-[2rem] shadow-sm border border-gray-50 flex flex-col gap-4 active:scale-[0.98] transition-all">
+                    <div class="w-full h-40 bg-gray-100 rounded-[1.5rem] overflow-hidden">
+                        <img src="${a.image || 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&q=80'}" class="w-full h-full object-cover" alt="News">
+                    </div>
+                    <div class="flex-grow">
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="px-2 py-0.5 bg-blue-50 text-blue-600 rounded-md text-[9px] font-bold uppercase tracking-wider">ประกาศ</span>
+                            <span class="text-[9px] text-gray-400 font-medium">${a.date || ''}</span>
+                        </div>
+                        <h3 class="font-bold text-gray-800 mb-2 leading-tight">${a.title}</h3>
+                        <p class="text-xs text-gray-500 leading-relaxed line-clamp-3">${a.content}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        renderAnnouncements();
+    </script>
     <script src="js/theme.js"></script>
 </body>
 </html>
