@@ -105,34 +105,43 @@
         const list = document.getElementById('announcementList');
 
         async function renderList() {
-            const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"));
-            const snapshot = await getDocs(q);
-            const announcements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            try {
+                const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"));
+                const snapshot = await getDocs(q);
+                const announcements = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-            if (announcements.length === 0) {
-                list.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs">ยังไม่มีประกาศ</div>`;
-                return;
+                if (announcements.length === 0) {
+                    list.innerHTML = `<div class="text-center py-8 text-gray-400 text-xs">ยังไม่มีประกาศ</div>`;
+                    return;
+                }
+
+                list.innerHTML = announcements.map((a) => `
+                    <div class="p-4 rounded-2xl border border-gray-50 hover:border-blue-100 transition-all group relative">
+                        <div class="flex justify-between items-start mb-2">
+                            <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${a.title}</h4>
+                            <button onclick="deleteNews('${a.id}')" class="text-gray-300 hover:text-red-500 transition-colors">
+                                <i class="fas fa-trash-alt text-xs"></i>
+                            </button>
+                        </div>
+                        <p class="text-[10px] text-gray-500 line-clamp-2 mb-2">${a.content}</p>
+                        <div class="flex items-center justify-between">
+                            <span class="text-[9px] text-gray-400">${a.date}</span>
+                            ${a.isPopup ? '<span class="px-2 py-0.5 bg-green-100 text-green-600 rounded-full text-[8px] font-bold">Pop-up ON</span>' : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                console.error("Error loading announcements:", e);
+                list.innerHTML = '<p class="text-center text-xs text-red-400">เกิดข้อผิดพลาดในการโหลดข้อมูล</p>';
             }
-
-            list.innerHTML = announcements.map((a) => `
-                <div class="p-4 rounded-2xl border border-gray-50 hover:border-blue-100 transition-all group relative">
-                    <div class="flex justify-between items-start mb-2">
-                        <h4 class="font-bold text-sm text-gray-800 line-clamp-1">${a.title}</h4>
-                        <button onclick="deleteNews('${a.id}')" class="text-gray-300 hover:text-red-500 transition-colors">
-                            <i class="fas fa-trash-alt text-xs"></i>
-                        </button>
-                    </div>
-                    <p class="text-[10px] text-gray-500 line-clamp-2 mb-2">${a.content}</p>
-                    <div class="flex items-center justify-between">
-                        <span class="text-[9px] text-gray-400">${a.date}</span>
-                        ${a.isPopup ? '<span class="px-2 py-0.5 bg-green-100 text-green-600 rounded-full text-[8px] font-bold">Pop-up ON</span>' : ''}
-                    </div>
-                </div>
-            `).join('');
         }
 
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังโพสต์...';
+
             const newAnn = {
                 title: document.getElementById('newsTitle').value,
                 content: document.getElementById('newsContent').value,
@@ -142,16 +151,27 @@
                 timestamp: Date.now()
             };
 
-            await addDoc(collection(db, "announcements"), newAnn);
-            form.reset();
-            renderList();
-            alert('บันทึกประกาศเรียบร้อยแล้ว!');
+            try {
+                await addDoc(collection(db, "announcements"), newAnn);
+                form.reset();
+                await renderList();
+                alert('บันทึกประกาศเรียบร้อยแล้ว!');
+            } catch (err) {
+                alert('Error: ' + err.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i> โพสต์ประกาศ';
+            }
         });
 
         window.deleteNews = async (id) => {
             if(confirm('ยืนยันการลบประกาศนี้?')) {
-                await deleteDoc(doc(db, "announcements", id));
-                renderList();
+                try {
+                    await deleteDoc(doc(db, "announcements", id));
+                    await renderList();
+                } catch (e) {
+                    alert('Error: ' + e.message);
+                }
             }
         };
 

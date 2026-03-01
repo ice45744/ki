@@ -30,7 +30,8 @@ export const reportIssue = async (issueData, imageFile) => {
             ...issueData,
             imageUrl,
             status: "pending", // pending, fixed
-            createdAt: new Date().toISOString()
+            createdAt: new Date().toISOString(),
+            timestamp: new Date()
         });
         return { success: true, id: docRef.id };
     } catch (error) {
@@ -43,10 +44,28 @@ export const getReports = async () => {
     try {
         const q = query(collection(db, "reports"), orderBy("createdAt", "desc"));
         const querySnapshot = await getDocs(q);
-        return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        return querySnapshot.docs.map(doc => {
+            const data = doc.data();
+            return { 
+                id: doc.id, 
+                ...data,
+                // Ensure createdAt is a valid string for Date constructor if it's a Firestore Timestamp
+                createdAt: data.createdAt && typeof data.createdAt.toDate === 'function' ? data.createdAt.toDate().toISOString() : data.createdAt 
+            };
+        });
     } catch (error) {
         console.error("Error getting reports:", error);
         return [];
+    }
+};
+
+export const deleteReport = async (reportId) => {
+    try {
+        await deleteDoc(doc(db, "reports", reportId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting report:", error);
+        return { success: false, error };
     }
 };
 
@@ -94,6 +113,16 @@ export const getRewards = async () => {
     }
 };
 
+export const deleteReward = async (rewardId) => {
+    try {
+        await deleteDoc(doc(db, "rewards", rewardId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting reward:", error);
+        return { success: false, error };
+    }
+};
+
 export const updateReward = async (rewardId, updateData) => {
     try {
         const rewardRef = doc(db, "rewards", rewardId);
@@ -101,16 +130,6 @@ export const updateReward = async (rewardId, updateData) => {
         return { success: true };
     } catch (error) {
         console.error("Error updating reward:", error);
-        return { success: false, error };
-    }
-};
-
-export const deleteReward = async (rewardId) => {
-    try {
-        await deleteDoc(doc(db, "rewards", rewardId));
-        return { success: true };
-    } catch (error) {
-        console.error("Error deleting reward:", error);
         return { success: false, error };
     }
 };

@@ -143,7 +143,14 @@
         </a>
     </nav>
     <script src="js/theme.js"></script>
-    <script>
+    <script type="module">
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { app } from "./js/firebase-config.js";
+
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
         const tabGoodDeeds = document.getElementById('tab-good-deeds');
         const tabWasteBank = document.getElementById('tab-waste-bank');
         const contentGoodDeeds = document.getElementById('content-good-deeds');
@@ -166,6 +173,47 @@
             contentWasteBank.classList.remove('hidden');
             contentGoodDeeds.classList.add('hidden');
         });
+
+        // Good Deed Submission
+        const deedForm = document.querySelector('#content-good-deeds form') || document.querySelector('.bg-white.p-6.rounded-3xl.shadow-sm.space-y-4');
+        if (deedForm) {
+            const submitBtn = deedForm.querySelector('button');
+            const textarea = deedForm.querySelector('textarea');
+            
+            submitBtn.onclick = async () => {
+                const user = auth.currentUser;
+                if (!user) {
+                    alert('กรุณาเข้าสู่ระบบก่อนทำรายการ');
+                    window.location.href = 'login.html';
+                    return;
+                }
+
+                if (!textarea.value.trim()) {
+                    alert('กรุณากรอกรายละเอียดความดี');
+                    return;
+                }
+
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
+
+                try {
+                    await addDoc(collection(db, "activities"), {
+                        userId: user.uid,
+                        type: 'good_deed',
+                        description: textarea.value,
+                        timestamp: new Date(),
+                        status: 'pending'
+                    });
+                    alert('บันทึกข้อมูลเรียบร้อยแล้ว รอการตรวจสอบจากสภานักเรียน');
+                    textarea.value = '';
+                } catch (e) {
+                    alert('เกิดข้อผิดพลาด: ' + e.message);
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = 'ส่งข้อมูล';
+                }
+            };
+        }
     </script>
 </body>
 </html>

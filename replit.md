@@ -1,27 +1,23 @@
-# S.T. ก้าวหน้า (S.T. Progress)
+# S.T. Progress - Digital Student Council System
 
-ระบบดิจิทัลสภานักเรียน (Digital Student Council System) สำหรับโรงเรียนในประเทศไทย
+## Overview
+A digital platform for student engagement and school management, designed for schools in Thailand.
 
-## ฟีเจอร์ที่เพิ่มล่าสุด
-- **แผงควบคุมแอดมิน (Admin Dashboard)**: ศูนย์กลางการจัดการ รายงาน, ของรางวัล, ประกาศ และการเช็คชื่อ
-- **ระบบประกาศและ Pop-up**: เชื่อมต่อ Firebase Real-time แสดงประกาศสำคัญให้นักเรียนเห็นทันทีที่เข้าสู่ระบบ
-- **คลังของรางวัล**: จัดการสต็อกและแต้มที่ใช้แลกของรางวัลผ่านหน้าเว็บ
-- **ระบบเช็คชื่อ (Check-in System)**: บันทึกเวลาเข้าเรียนลง Firebase พร้อมระบบสร้าง QR Code ถาวร
-- **ล้างข้อมูลปลอม**: ปรับปรุงทุกส่วนให้ดึงข้อมูลจริงจาก Firebase แทนข้อมูลตัวอย่าง
+## Tech Stack
+- **Frontend:** HTML5, Tailwind CSS, Vanilla JavaScript (ES6 Modules)
+- **Backend:** Firebase (Authentication, Firestore Database, Cloud Storage)
+- **Tools:** Font Awesome, Google Fonts (Kanit)
 
-## โครงสร้างไฟล์
-- `index.html`: หน้าหลักนักเรียน (พร้อมระบบ Pop-up ประกาศ)
-- `admin-dashboard.html`: แผงควบคุมหลักสำหรับแอดมิน
-- `admin-reports.html`: จัดการรายการแจ้งเหตุจากนักเรียน
-- `admin-inventory.html`: จัดการคลังของรางวัล
-- `admin-announcements.html`: จัดการข่าวสารและประกาศ
-- `admin-qr-generator.html`: สร้าง QR Code สำหรับจุดเช็คชื่อ
-- `check-in.html`: ระบบบันทึกเวลาเข้าเรียน (เชื่อมต่อ Firebase)
-- `js/data.js`: โมดูลจัดการข้อมูล Firebase (Reports, Rewards, etc.)
-- `js/auth.js`: ระบบยืนยันตัวตน (Firebase Auth)
-- `style.css`: สไตล์หลักและ Dark Mode
+## Key Features
+- **Announcements:** Real-time news and urgent pop-up alerts.
+- **Reporting System:** Students can report issues with categories and images.
+- **Points & Rewards:** Activity logging and a digital reward inventory.
+- **Admin Dashboard:** System statistics and management tools for student council.
+- **Dark Mode:** Support for low-light environments.
 
-## การดูแลรักษาระบบ (Maintenance)
-- ข้อมูลทั้งหมดถูกจัดเก็บใน Firebase Firestore
-- รูปภาพประกาศและของรางวัลรองรับทั้ง URL และการอัปโหลด (Firebase Storage)
-- ระบบเช็คชื่อจำกัดเวลาตามที่ตั้งค่าไว้ใน `check-in.html`
+## Database Structure (Firestore)
+- `announcements`: Store school news.
+- `reports`: Store student complaints/issues.
+- `rewards`: Store items in the gift shop.
+- `users`: Store student profiles and roles.
+- `activities`: Store recorded student deeds.
