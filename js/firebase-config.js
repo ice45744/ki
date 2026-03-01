@@ -1,14 +1,13 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 
 // Firebase configuration
-// Replace these with your actual Firebase project settings
 const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyCGnKFR-bmf4t0xXb53iOgp8mHB6RkIOeg",
+  authDomain: "student-council-d3c27.firebaseapp.com",
+  projectId: "student-council-d3c27",
+  storageBucket: "student-council-d3c27.firebasestorage.app",
+  messagingSenderId: "766262044382",
+  appId: "1:766262044382:web:d86c252ca307a51580844f"
 };
 
 export const app = initializeApp(firebaseConfig);
