@@ -105,7 +105,8 @@
             const issueData = {
                 category: document.getElementById('issueCategory').value,
                 title: document.getElementById('issueTitle').value,
-                description: document.getElementById('issueDescription').value
+                description: document.getElementById('issueDescription').value,
+                reporterName: "ผู้ใช้งานทั่วไป" // หรือดึงจาก Auth ถ้ามี
             };
             const imageFile = document.getElementById('issueImage').files[0];
 

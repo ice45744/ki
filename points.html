@@ -147,6 +147,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { app } from "./js/firebase-config.js";
+        import { submitGoodDeed } from "./js/data.js";
 
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -197,15 +198,13 @@
                 submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> กำลังบันทึก...';
 
                 try {
-                    await addDoc(collection(db, "activities"), {
-                        userId: user.uid,
-                        type: 'good_deed',
-                        description: textarea.value,
-                        timestamp: new Date(),
-                        status: 'pending'
-                    });
-                    alert('บันทึกข้อมูลเรียบร้อยแล้ว รอการตรวจสอบจากสภานักเรียน');
-                    textarea.value = '';
+                    const result = await submitGoodDeed(user.uid, user.displayName, textarea.value);
+                    if (result.success) {
+                        alert('บันทึกข้อมูลเรียบร้อยแล้ว รอการตรวจสอบจากสภานักเรียน');
+                        textarea.value = '';
+                    } else {
+                        throw result.error;
+                    }
                 } catch (e) {
                     alert('เกิดข้อผิดพลาด: ' + e.message);
                 } finally {
