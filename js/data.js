@@ -292,4 +292,96 @@ export const updateUserData = async (uid, data, imageFile) => {
     }
 };
 
+// --- Admin Functions ---
+export const getReports = async () => {
+    try {
+        const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error getting reports:", error);
+        return [];
+    }
+};
+
+export const updateReportStatus = async (reportId, status) => {
+    try {
+        const reportRef = doc(db, "reports", reportId);
+        await updateDoc(reportRef, { status });
+        
+        await sendDiscordLog(WEBHOOKS.admin_action, `📝 **อัปเดตสถานะการแจ้งเหตุ**`, {
+            title: "การแก้ไขข้อมูลโดยแอดมิน",
+            color: 3447003,
+            fields: [
+                { name: "ไอดีรายงาน", value: reportId, inline: true },
+                { name: "สถานะใหม่", value: status, inline: true }
+            ],
+            timestamp: new Date().toISOString()
+        });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating report status:", error);
+        return { success: false, error };
+    }
+};
+
+export const getRewards = async () => {
+    try {
+        const snapshot = await getDocs(collection(db, "rewards"));
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error getting rewards:", error);
+        return [];
+    }
+};
+
+export const deleteReward = async (rewardId) => {
+    try {
+        await deleteDoc(doc(db, "rewards", rewardId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting reward:", error);
+        return { success: false, error };
+    }
+};
+
+export const addAdminReward = async (rewardData) => {
+    try {
+        const docRef = await addDoc(collection(db, "rewards"), {
+            ...rewardData,
+            createdAt: new Date().toISOString()
+        });
+        return { success: true, id: docRef.id };
+    } catch (error) {
+        console.error("Error adding reward:", error);
+        return { success: false, error };
+    }
+};
+
+export const deleteReport = async (reportId) => {
+    try {
+        const reportRef = doc(db, "reports", reportId);
+        const reportSnap = await getDoc(reportRef);
+        const reportData = reportSnap.exists() ? reportSnap.data() : null;
+
+        await deleteDoc(reportRef);
+
+        if (reportData) {
+            await sendDiscordLog(WEBHOOKS.admin_action, `🗑️ **ลบรายการแจ้งปัญหา**`, {
+                title: "การลบข้อมูลโดยแอดมิน",
+                color: 15158332,
+                fields: [
+                    { name: "หัวข้อ", value: reportData.title, inline: true },
+                    { name: "หมวดหมู่", value: reportData.category, inline: true }
+                ],
+                timestamp: new Date().toISOString()
+            });
+        }
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting report:", error);
+        return { success: false, error };
+    }
+};
+
 export { auth, db, storage };
