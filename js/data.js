@@ -215,6 +215,41 @@ export const updateReportStatus = async (reportId, status) => {
     }
 };
 
+// --- Rewards Inventory ---
+export const getRewards = async () => {
+    try {
+        const q = query(collection(db, "rewards"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error getting rewards:", error);
+        return [];
+    }
+};
+
+export const addRewardItem = async (rewardData) => {
+    try {
+        const docRef = await addDoc(collection(db, "rewards"), {
+            ...rewardData,
+            createdAt: new Date().toISOString()
+        });
+        return { success: true, id: docRef.id };
+    } catch (error) {
+        console.error("Error adding reward item:", error);
+        return { success: false, error };
+    }
+};
+
+export const deleteReward = async (rewardId) => {
+    try {
+        await deleteDoc(doc(db, "rewards", rewardId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting reward:", error);
+        return { success: false, error };
+    }
+};
+
 export const addAdminReward = async (uid, points, wasteStamps, reason) => {
     try {
         const userRef = doc(db, "users", uid);
