@@ -193,6 +193,28 @@ export const deleteReport = async (reportId) => {
     }
 };
 
+export const getReports = async () => {
+    try {
+        const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    } catch (error) {
+        console.error("Error getting reports:", error);
+        return [];
+    }
+};
+
+export const updateReportStatus = async (reportId, status) => {
+    try {
+        const reportRef = doc(db, "reports", reportId);
+        await updateDoc(reportRef, { status });
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating report status:", error);
+        return { success: false, error };
+    }
+};
+
 export const addAdminReward = async (uid, points, wasteStamps, reason) => {
     try {
         const userRef = doc(db, "users", uid);
