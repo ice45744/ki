@@ -184,4 +184,14 @@ export const register = async (name, id, pass, role = 'student') => {
     }
 };
 
+export const deleteReport = async (reportId) => {
+    try {
+        await deleteDoc(doc(db, "reports", reportId));
+        return { success: true };
+    } catch (error) {
+        console.error("Error deleting report:", error);
+        return { success: false, error };
+    }
+};
+
 export { auth, db, storage };
