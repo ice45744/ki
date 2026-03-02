@@ -20,24 +20,17 @@ import {
     getDoc,
     setDoc,
     deleteDoc,
-    enableIndexedDbPersistence
+    initializeFirestore,
+    persistentLocalCache,
+    persistentIndexedDbLocalCache
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { app } from "./firebase-config.js";
 
 const auth = getAuth(app);
-const db = getFirestore(app);
-
-// Enable Offline Persistence for faster loading
-if (typeof window !== "undefined") {
-    enableIndexedDbPersistence(db).catch((err) => {
-        if (err.code == 'failed-precondition') {
-            console.warn("Persistence failed: Multiple tabs open");
-        } else if (err.code == 'unimplemented') {
-            console.warn("Persistence unimplemented in this browser");
-        }
-    });
-}
+const db = initializeFirestore(app, {
+    localCache: persistentLocalCache({ tabManager: persistentIndexedDbLocalCache() })
+});
 
 const storage = getStorage(app);
 
