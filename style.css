@@ -554,6 +554,13 @@ video {
   display: none;
 }
 
+body {
+  font-family: 'Kanit', sans-serif;
+  background-color: #f8faff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
 .container {
   width: 100%;
 }
@@ -1940,13 +1947,6 @@ video {
 
 .duration-300 {
   transition-duration: 300ms;
-}
-
-body {
-  font-family: 'Kanit', sans-serif;
-  background-color: #f8faff;
-  transition: background-color 0.3s ease, color 0.3s ease;
-  -webkit-tap-highlight-color: transparent;
 }
 
 /* Dark Mode Core */

@@ -2,11 +2,13 @@
 @tailwind components;
 @tailwind utilities;
 
-body {
+@layer base {
+  body {
     font-family: 'Kanit', sans-serif;
     background-color: #f8faff;
     transition: background-color 0.3s ease, color 0.3s ease;
     -webkit-tap-highlight-color: transparent;
+  }
 }
 
 /* Dark Mode Core */
