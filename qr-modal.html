@@ -1,0 +1,71 @@
+<!-- QR Scanner Modal Overlay -->
+<div id="qrScannerModal" class="fixed inset-0 bg-black/60 z-[10000] hidden flex items-center justify-center p-6 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-md rounded-[2.5rem] overflow-hidden shadow-2xl transform scale-95 transition-all duration-300 relative">
+        <div class="p-6 border-b border-gray-50 flex justify-between items-center bg-white/80 backdrop-blur-md sticky top-0 z-10">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-blue-50 rounded-xl flex items-center justify-center text-blue-500">
+                    <i class="fas fa-qrcode text-sm"></i>
+                </div>
+                <div>
+                    <h3 class="font-bold text-gray-800 text-sm">สแกน QR Code</h3>
+                    <p class="text-[10px] text-gray-400">สแกนเพื่อรับแต้มหรือเช็คชื่อ</p>
+                </div>
+            </div>
+            <button id="closeScannerBtn" class="w-8 h-8 bg-gray-100 hover:bg-gray-200 rounded-full flex items-center justify-center text-gray-500 transition-colors">
+                <i class="fas fa-times text-xs"></i>
+            </button>
+        </div>
+        
+        <div class="p-6">
+            <div id="reader-popup" class="w-full aspect-square bg-gray-50 rounded-[2rem] overflow-hidden border-2 border-dashed border-gray-200 flex items-center justify-center relative">
+                <!-- QR Box will be here -->
+                <div id="reader-loader" class="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-gray-50/80 backdrop-blur-sm z-20">
+                    <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+                    <p class="text-[10px] text-gray-400 font-medium">กำลังเข้าถึงกล้อง...</p>
+                </div>
+            </div>
+            
+            <!-- Result Toast inside Modal -->
+            <div id="scanResultPopup" class="hidden mt-4 p-4 rounded-2xl flex items-center gap-3 animate-bounce-in">
+                <div id="scanIconPopup" class="w-10 h-10 rounded-xl flex items-center justify-center text-sm shadow-sm"></div>
+                <div class="flex-1">
+                    <p id="scanTitlePopup" class="text-xs font-bold"></p>
+                    <p id="scanMsgPopup" class="text-[10px] opacity-80"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="p-6 bg-gray-50/50 border-t border-gray-50">
+            <p class="text-[10px] text-gray-400 text-center leading-relaxed">
+                <i class="fas fa-info-circle mr-1"></i>
+                วาง QR Code ให้อยู่ในกรอบสีฟ้าเพื่อทำการสแกนอัตโนมัติ
+            </p>
+        </div>
+    </div>
+</div>
+
+<style>
+    #reader-popup { width: 100% !important; border: none !important; }
+    #reader-popup__scan_region { background: #f8fafc !important; }
+    #reader-popup__dashboard_section_csr button {
+        background-color: #3b82f6 !important;
+        color: white !important;
+        padding: 0.6rem 1.2rem !important;
+        border-radius: 1rem !important;
+        font-weight: 600 !important;
+        font-size: 0.75rem !important;
+        border: none !important;
+        margin-top: 1rem !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2) !important;
+    }
+    #reader-popup video { border-radius: 1.5rem !important; object-fit: cover !important; }
+    
+    .animate-bounce-in {
+        animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+    
+    @keyframes bounceIn {
+        from { opacity: 0; transform: scale(0.8); }
+        to { opacity: 1; transform: scale(1); }
+    }
+</style>
