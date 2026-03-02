@@ -36,11 +36,17 @@ const storage = getStorage(app);
 // --- Session Cache ---
 const userCache = new Map();
 let announcementsCache = null;
+let reportsCache = null;
+let rewardsCache = null;
 
 // --- User Data with Cache-First + Background Sync ---
 export const getUserData = async (uid, useCache = true) => {
     try {
         if (useCache && userCache.has(uid)) {
+            // Return cached but sync in background
+            getDoc(doc(db, "users", uid)).then(docSnap => {
+                if (docSnap.exists()) userCache.set(uid, docSnap.data());
+            });
             return { success: true, data: userCache.get(uid) };
         }
         const userDoc = await getDoc(doc(db, "users", uid));
@@ -60,6 +66,11 @@ export const getUserData = async (uid, useCache = true) => {
 export const getAnnouncements = async (limitCount = 10, useCache = true) => {
     try {
         if (useCache && announcementsCache) {
+            // Sync in background
+            const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(limitCount));
+            getDocs(q).then(snapshot => {
+                announcementsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            });
             return announcementsCache.slice(0, limitCount);
         }
         const q = query(collection(db, "announcements"), orderBy("timestamp", "desc"), limit(limitCount));
@@ -71,6 +82,48 @@ export const getAnnouncements = async (limitCount = 10, useCache = true) => {
         console.error("Error getting announcements:", error);
         if (announcementsCache) return announcementsCache.slice(0, limitCount);
         return [];
+    }
+};
+
+// --- Reports with Cache ---
+export const getReports = async (useCache = true) => {
+    try {
+        if (useCache && reportsCache) {
+            const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+            getDocs(q).then(snapshot => {
+                reportsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            });
+            return reportsCache;
+        }
+        const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        reportsCache = data;
+        return data;
+    } catch (error) {
+        console.error("Error getting reports:", error);
+        return reportsCache || [];
+    }
+};
+
+// --- Rewards with Cache ---
+export const getRewards = async (useCache = true) => {
+    try {
+        if (useCache && rewardsCache) {
+            const q = query(collection(db, "rewards"), orderBy("createdAt", "desc"));
+            getDocs(q).then(snapshot => {
+                rewardsCache = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            });
+            return rewardsCache;
+        }
+        const q = query(collection(db, "rewards"), orderBy("createdAt", "desc"));
+        const snapshot = await getDocs(q);
+        const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        rewardsCache = data;
+        return data;
+    } catch (error) {
+        console.error("Error getting rewards:", error);
+        return rewardsCache || [];
     }
 };
 
@@ -186,6 +239,7 @@ export const register = async (name, id, pass, role = 'student') => {
 export const deleteReport = async (reportId) => {
     try {
         await deleteDoc(doc(db, "reports", reportId));
+        reportsCache = null; // Invalidate cache
         return { success: true };
     } catch (error) {
         console.error("Error deleting report:", error);
@@ -193,39 +247,9 @@ export const deleteReport = async (reportId) => {
     }
 };
 
-export const getReports = async () => {
-    try {
-        const q = query(collection(db, "reports"), orderBy("timestamp", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error("Error getting reports:", error);
-        return [];
-    }
-};
-
-export const updateReportStatus = async (reportId, status) => {
-    try {
-        const reportRef = doc(db, "reports", reportId);
-        await updateDoc(reportRef, { status });
-        return { success: true };
-    } catch (error) {
-        console.error("Error updating report status:", error);
-        return { success: false, error };
-    }
-};
-
+// Deleted the old getReports from here as it's now moved up
 // --- Rewards Inventory ---
-export const getRewards = async () => {
-    try {
-        const q = query(collection(db, "rewards"), orderBy("createdAt", "desc"));
-        const snapshot = await getDocs(q);
-        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    } catch (error) {
-        console.error("Error getting rewards:", error);
-        return [];
-    }
-};
+// Deleted the old getRewards from here as it's now moved up
 
 export const addRewardItem = async (rewardData) => {
     try {
@@ -233,6 +257,7 @@ export const addRewardItem = async (rewardData) => {
             ...rewardData,
             createdAt: new Date().toISOString()
         });
+        rewardsCache = null; // Invalidate cache
         return { success: true, id: docRef.id };
     } catch (error) {
         console.error("Error adding reward item:", error);
@@ -243,11 +268,31 @@ export const addRewardItem = async (rewardData) => {
 export const deleteReward = async (rewardId) => {
     try {
         await deleteDoc(doc(db, "rewards", rewardId));
+        rewardsCache = null; // Invalidate cache
         return { success: true };
     } catch (error) {
         console.error("Error deleting reward:", error);
         return { success: false, error };
     }
+};
+
+export const updateReportStatus = async (reportId, status) => {
+    try {
+        const reportRef = doc(db, "reports", reportId);
+        await updateDoc(reportRef, { status });
+        reportsCache = null; // Invalidate cache
+        return { success: true };
+    } catch (error) {
+        console.error("Error updating report status:", error);
+        return { success: false, error };
+    }
+};
+
+export const clearAllCaches = () => {
+    userCache.clear();
+    announcementsCache = null;
+    reportsCache = null;
+    rewardsCache = null;
 };
 
 export const addAdminReward = async (uid, points, wasteStamps, reason) => {
