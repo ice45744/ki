@@ -21,15 +21,14 @@ import {
     setDoc,
     deleteDoc,
     initializeFirestore,
-    persistentLocalCache,
-    persistentIndexedDbLocalCache
+    persistentLocalCache
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 import { app } from "./firebase-config.js";
 
 const auth = getAuth(app);
 const db = initializeFirestore(app, {
-    localCache: persistentLocalCache({ tabManager: persistentIndexedDbLocalCache() })
+    localCache: persistentLocalCache({})
 });
 
 const storage = getStorage(app);
