@@ -69,23 +69,13 @@
                     <p class="text-gray-400 text-xs">สะสมครบ 10 ดวง แลกรับของรางวัล</p>
                 </div>
                 <div class="text-right">
-                    <span class="text-3xl font-bold text-green-500">0</span>
+                    <span id="wasteStampsCount" class="text-3xl font-bold text-green-500">0</span>
                     <span class="text-gray-400 text-sm">/10</span>
                 </div>
             </div>
 
-            <div class="grid grid-cols-5 gap-3 mb-8">
-                <!-- Stamp slots 1-10 -->
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">1</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">2</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">3</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">4</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">5</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">6</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">7</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">8</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">9</div>
-                <div class="aspect-square rounded-full border-2 border-dashed border-gray-100 dark:border-slate-700 flex items-center justify-center text-xs text-gray-300">10</div>
+            <div id="stampGrid" class="grid grid-cols-5 gap-3 mb-8">
+                <!-- Stamps will be rendered here -->
             </div>
 
             <button class="w-full bg-[#1e293b] dark:bg-blue-600 text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3 shadow-xl">
@@ -99,20 +89,11 @@
                 <i class="fas fa-gift text-red-400"></i>
                 ของรางวัลที่แลกได้
             </h3>
-            <div class="grid grid-cols-2 gap-4">
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl shadow-sm text-center">
-                    <div class="w-16 h-16 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2405/2405479.png" class="w-10 h-10 object-contain" alt="Drink">
-                    </div>
-                    <p class="font-bold text-sm text-gray-800 dark:text-white">น้ำดื่ม 1 ขวด</p>
-                    <p class="text-[10px] text-blue-500 mt-1">ใช้ 10 แสตมป์</p>
-                </div>
-                <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl shadow-sm text-center">
-                    <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <img src="https://cdn-icons-png.flaticon.com/512/2904/2904831.png" class="w-10 h-10 object-contain" alt="Notebook">
-                    </div>
-                    <p class="font-bold text-sm text-gray-800 dark:text-white">สมุดโน้ต 1 เล่ม</p>
-                    <p class="text-[10px] text-blue-500 mt-1">ใช้ 20 แสตมป์</p>
+            <div id="rewards-container" class="grid grid-cols-2 gap-4">
+                <!-- Rewards will be loaded from DB -->
+                <div class="col-span-2 py-8 text-center text-gray-400 text-sm">
+                    <i class="fas fa-spinner fa-spin mb-2 block text-xl"></i>
+                    กำลังโหลดของรางวัล...
                 </div>
             </div>
         </div>
@@ -146,7 +127,7 @@
         import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { getFirestore, collection, addDoc, getDocs, query, where, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { app } from "./js/firebase-config.js";
-        import { submitGoodDeed } from "./js/data.js";
+        import { submitGoodDeed, getUserData, getRewards } from "./js/data.js";
 
         const auth = getAuth(app);
         const db = getFirestore(app);
@@ -155,6 +136,51 @@
         const tabWasteBank = document.getElementById('tab-waste-bank');
         const contentGoodDeeds = document.getElementById('content-good-deeds');
         const contentWasteBank = document.getElementById('content-waste-bank');
+
+        // UI Updates for Waste Bank
+        async function updateWasteBankUI(user) {
+            if (!user) return;
+            
+            const userDataResult = await getUserData(user.uid);
+            if (userDataResult.success) {
+                const data = userDataResult.data;
+                const stamps = data.wasteStamps || 0;
+                document.getElementById('wasteStampsCount').textContent = stamps;
+                
+                const grid = document.getElementById('stampGrid');
+                grid.innerHTML = '';
+                for (let i = 1; i <= 10; i++) {
+                    const isStamped = i <= (stamps % 10 || (stamps > 0 && stamps % 10 === 0 ? 10 : 0));
+                    const div = document.createElement('div');
+                    div.className = `aspect-square rounded-full border-2 flex items-center justify-center text-xs ${isStamped ? 'bg-green-500 border-green-500 text-white' : 'border-dashed border-gray-100 dark:border-slate-700 text-gray-300'}`;
+                    div.innerHTML = isStamped ? '<i class="fas fa-check"></i>' : i;
+                    grid.appendChild(div);
+                }
+            }
+
+            // Load Real Rewards
+            const rewardsContainer = document.getElementById('rewards-container');
+            const rewards = await getRewards();
+            if (rewards.length > 0) {
+                rewardsContainer.innerHTML = rewards.map(item => `
+                    <div class="bg-white dark:bg-slate-800 p-4 rounded-3xl shadow-sm text-center border border-gray-50 dark:border-slate-700">
+                        <div class="w-16 h-16 bg-blue-50 dark:bg-blue-900/20 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-gift text-2xl text-blue-500"></i>
+                        </div>
+                        <p class="font-bold text-sm text-gray-800 dark:text-white line-clamp-1">${item.name}</p>
+                        <p class="text-[10px] text-blue-500 mt-1">ใช้ ${item.points || 0} แต้ม / ${item.wasteStamps || 0} แสตมป์</p>
+                    </div>
+                `).join('');
+            } else {
+                rewardsContainer.innerHTML = '<div class="col-span-2 py-4 text-center text-gray-400 text-xs">ยังไม่มีของรางวัลในขณะนี้</div>';
+            }
+        }
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                updateWasteBankUI(user);
+            }
+        });
 
         tabGoodDeeds.addEventListener('click', () => {
             tabGoodDeeds.classList.add('bg-white', 'shadow-sm', 'text-slate-800');
