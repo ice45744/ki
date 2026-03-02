@@ -194,4 +194,38 @@ export const deleteReport = async (reportId) => {
     }
 };
 
+export const addAdminReward = async (uid, points, wasteStamps, reason) => {
+    try {
+        const userRef = doc(db, "users", uid);
+        const userDoc = await getDoc(userRef);
+        if (!userDoc.exists()) return { success: false, error: "User not found" };
+
+        const currentData = userDoc.data();
+        const newPoints = (currentData.points || 0) + Number(points);
+        const newWasteStamps = (currentData.wasteStamps || 0) + Number(wasteStamps);
+
+        await updateDoc(userRef, {
+            points: newPoints,
+            wasteStamps: newWasteStamps
+        });
+
+        await addDoc(collection(db, "admin_rewards"), {
+            userId: uid,
+            points: Number(points),
+            wasteStamps: Number(wasteStamps),
+            reason,
+            timestamp: new Date()
+        });
+
+        if (userCache.has(uid)) {
+            userCache.set(uid, { ...currentData, points: newPoints, wasteStamps: newWasteStamps });
+        }
+
+        return { success: true };
+    } catch (error) {
+        console.error("Error adding admin reward:", error);
+        return { success: false, error };
+    }
+};
+
 export { auth, db, storage };
