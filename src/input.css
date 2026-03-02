@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+    font-family: 'Kanit', sans-serif;
+    background-color: #f8faff;
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+/* Dark Mode Core */
+body.dark-mode {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+.dark-mode .bg-white,
+.dark-mode .bg-gray-50,
+.dark-mode .bg-blue-50,
+.dark-mode .bg-orange-50,
+.dark-mode .bg-green-50,
+.dark-mode .bg-gray-100 {
+    background-color: #1e293b !important;
+    color: #f1f5f9 !important;
+    border-color: #334155 !important;
+}
+
+.dark-mode .bg-blue-600 {
+    background-color: #1e3a8a !important;
+}
+
+.dark-mode .text-gray-800, 
+.dark-mode .text-gray-900,
+.dark-mode .text-blue-900,
+.dark-mode .text-orange-900,
+.dark-mode .text-green-900,
+.dark-mode h1, .dark-mode h2, .dark-mode h3, .dark-mode span {
+    color: #f1f5f9 !important;
+}
+
+.dark-mode .text-gray-400,
+.dark-mode .text-gray-500,
+.dark-mode .text-blue-100,
+.dark-mode .text-blue-200 {
+    color: #94a3b8 !important;
+}
+
+.dark-mode nav {
+    background-color: #1e293b !important;
+    border-top-color: #334155 !important;
+}
+
+.dark-mode .nav-item {
+    color: #64748b;
+}
+
+.dark-mode .nav-item.active {
+    color: #3b82f6;
+}
+
+.dark-mode .profile-dropdown {
+    background: #1e293b !important;
+    border: 1px solid #334155 !important;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.4) !important;
+}
+
+.dark-mode hr {
+    border-color: #334155 !important;
+}
+
+/* Modal animation */
+#settingsModal.hidden {
+    display: none;
+}
+
+#settingsModal > div:last-child {
+    transition: transform 0.3s ease-out;
+}
+
+#settingsModal.hidden > div:last-child {
+    transform: translateY(100%);
+}
+
+/* UI Improvements */
+.nav-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #94a3b8;
+    font-size: 0.7rem;
+    padding: 0.4rem 0;
+    transition: all 0.2s;
+    flex: 1;
+}
+
+.nav-item i {
+    font-size: 1.3rem;
+    margin-bottom: 0.1rem;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: calc(100% + 10px);
+    left: -10px; /* เปลี่ยนจาก right: -15px เป็น left เพื่อให้เมนูแสดงจากซ้ายไปขวา */
+    width: 230px;
+    background: white;
+    border-radius: 1.25rem;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 99999;
+}
+
+.profile-dropdown.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
