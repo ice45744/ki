@@ -71,6 +71,7 @@
                 <div class="text-right">
                     <span id="wasteStampsCount" class="text-3xl font-bold text-green-500">0</span>
                     <span class="text-gray-400 text-sm">/10</span>
+                    <p class="text-[10px] text-gray-400 mt-1">10 แต้ม = 1 แสตมป์</p>
                 </div>
             </div>
 
@@ -144,13 +145,17 @@
             const userDataResult = await getUserData(user.uid);
             if (userDataResult.success) {
                 const data = userDataResult.data;
-                const stamps = data.wasteStamps || 0;
-                document.getElementById('wasteStampsCount').textContent = stamps;
+                const totalPoints = data.points || 0;
+                const stampsFromPoints = Math.floor(totalPoints / 10);
+                const extraStamps = data.wasteStamps || 0;
+                const totalStamps = stampsFromPoints + extraStamps;
+                
+                document.getElementById('wasteStampsCount').textContent = totalStamps;
                 
                 const grid = document.getElementById('stampGrid');
                 grid.innerHTML = '';
                 for (let i = 1; i <= 10; i++) {
-                    const isStamped = i <= (stamps % 10 || (stamps > 0 && stamps % 10 === 0 ? 10 : 0));
+                    const isStamped = i <= (totalStamps % 10 || (totalStamps > 0 && totalStamps % 10 === 0 ? 10 : 0));
                     const div = document.createElement('div');
                     div.className = `aspect-square rounded-full border-2 flex items-center justify-center text-xs ${isStamped ? 'bg-green-500 border-green-500 text-white' : 'border-dashed border-gray-100 dark:border-slate-700 text-gray-300'}`;
                     div.innerHTML = isStamped ? '<i class="fas fa-check"></i>' : i;
